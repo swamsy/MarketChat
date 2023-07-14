@@ -1,0 +1,23 @@
+body {
+  margin: 0;
+  padding: 0;
+}
+
+.chat-area {
+  width: 25%;
+  background-color: #444654;
+}
+
+.chat-area p {
+  color: #ffffff;
+  font-size: 14px;
+  padding: 10px;
+}
+
+.assistant {
+  text-align: left;
+}
+
+.user {
+  text-align: right;
+}
