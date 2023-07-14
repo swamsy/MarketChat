@@ -12,8 +12,8 @@ const PORT = process.env.PORT || 5000;
 app.use(express.json());
 app.use(cors());
 
-app.use('/', chatbotRoutes);
-app.use('/', alphavantageRoutes);
+app.use('/chatbot', chatbotRoutes);
+app.use('/alphavantage', alphavantageRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);

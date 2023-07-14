@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import About from './About';
 import KeyData from './KeyData';
+import { getCompanyOverview } from '../services/api';
 
 function CompanyOverview({ symbol }) {
   const [companyData, setCompanyData] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
-      const response = await fetch(`https://www.alphavantage.co/query?function=OVERVIEW&symbol=AAPL&apikey=your_api_key`);
-      const data = await response.json();
+      const data = await getCompanyOverview(symbol);
       setCompanyData(data);
     };
     fetchData();

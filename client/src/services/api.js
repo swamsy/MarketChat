@@ -1,5 +1,5 @@
 export async function sendMessageToApi(message) {
-    const response = await fetch('http://localhost:5000/', {
+    const response = await fetch('http://localhost:5000/chatbot', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -11,4 +11,10 @@ export async function sendMessageToApi(message) {
     
     const data = await response.json()
     return data
+}
+
+export async function getCompanyOverview(symbol) {
+  const response = await fetch(`http://localhost:5000/alphavantage/company-overview/${symbol}`);
+  const data = await response.json();
+  return data;
 }
