@@ -1,4 +1,5 @@
 import InfoSection from './InfoSection';
+import { formatLargeNum } from '../utilities/helperFunctions';
 
 function KeyData({ companyData }) {
     return (
@@ -8,7 +9,7 @@ function KeyData({ companyData }) {
         <div className="info-section">
             <InfoSection 
                 data={[
-                ["Market cap", companyData.MarketCapitalization],
+                ["Market cap", formatLargeNum(companyData.MarketCapitalization)],
                 ["P/E ratio", companyData.PERatio],
                 ["52 week range", `$${companyData['52WeekLow']} - $${companyData['52WeekHigh']}`],
                 ["Dividend yield", `${(companyData.DividendYield * 100).toFixed(2)}%`],

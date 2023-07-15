@@ -1,12 +1,14 @@
 import CompanyOverview from './components/CompanyOverview';
 import Chatbot from './components/Chatbot';
+import SearchBar from './components/SearchBar';
 
 function App() {
   return (  
-    <div clasName="App">
+    <>
+      <SearchBar/>
       <Chatbot/>
-      <CompanyOverview symbol="AAPL"/>
-    </div>
+      <CompanyOverview symbol="GOOGL"/>
+    </>
   );
 }
 

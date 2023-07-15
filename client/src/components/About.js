@@ -1,4 +1,5 @@
 import InfoSection from './InfoSection';
+import { capitalizeWords } from '../utilities/helperFunctions.js';
 
 function About({ companyData }) {
     return (
@@ -7,8 +8,8 @@ function About({ companyData }) {
         <div className="info-section">
             <InfoSection 
                 data={[
-                ["Sector", companyData.Sector.toLowerCase().replace(/\b\w/g, (l) => l.toUpperCase())],
-                ["Industry", companyData.Industry.toLowerCase().replace(/\b\w/g, (l) => l.toUpperCase())],
+                ["Sector", capitalizeWords(companyData.Sector)],
+                ["Industry", capitalizeWords(companyData.Industry)],
                 ["Exchange", companyData.Exchange],
                 ["Country", companyData.Country],
                 ["Currency", companyData.Currency],
