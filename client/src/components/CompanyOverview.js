@@ -5,24 +5,32 @@ import { getCompanyOverview } from '../services/api';
 
 function CompanyOverview({ symbol }) {
   const [companyData, setCompanyData] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);  // Added this state
 
   useEffect(() => {
     const fetchData = async () => {
+      setIsLoading(true);  // set loading state true when starting API call
       const data = await getCompanyOverview(symbol);
-      setCompanyData(data);
+      // Check if the data object is empty, if so set to null
+      if (Object.keys(data).length === 0) {
+        setCompanyData(null);
+      } else {
+        setCompanyData(data);
+      }
+      setIsLoading(false);  // set loading state false when API call is done
     };
     fetchData();
   }, [symbol]);  // The effect will run again if the symbol prop changes
 
   return (
     <div>
-      {companyData ? (
+      {isLoading ? (
+        <p>Loading...</p>
+      ) : (
         <>
           <About companyData={companyData}/>
           <KeyData companyData={companyData}/>
         </>
-      ) : (
-        <p>Loading...</p>
       )}
     </div>
   );

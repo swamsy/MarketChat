@@ -25,6 +25,7 @@ router.post('/',  async (req, res) => {
         });
 
         res.json(response.data)
+        console.log('AI response fetched')
 
     } catch (err) {
         console.error(err);

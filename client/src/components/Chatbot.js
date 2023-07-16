@@ -1,19 +1,25 @@
 import { useState } from 'react'
 import { sendMessageToApi } from '../services/api'
 
-function Chatbot() {  
+function Chatbot({ symbol }) {  
   const [ value, setValue ] = useState('')
   const [ messages, setMessages] = useState([])
+  const suggestedQueries = ["What is MarketChat?", `Give me a financial analysis on ${symbol}`];
 
-  const sendMessage = async () => {
-    setMessages(messages => [...messages, {role: 'user', content: value}])
+  const sendMessage = async (message) => {
+    setMessages(messages => [...messages, {role: 'user', content: message}])
     try {
-      const data = await sendMessageToApi(value)
+      const data = await sendMessageToApi(message)
       setMessages(messages => [...messages, {role: 'Mark', content: data.choices[0].message.content}])
       setValue('')   
-    } catch (err) {
-      console.error(err)
+    } catch (error) {
+      console.error(error)
     }
+  }
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    sendMessage(value);
   }
 
   return (
@@ -25,10 +31,17 @@ function Chatbot() {
           </div>
         ))}
       </div>
-      <div className="input-container">
-        <input type="text" value={value} onChange={(e) => setValue(e.target.value)} />
-        <button onClick={sendMessage}>Send</button>
+      <div className="suggested-queries">
+        {suggestedQueries.map((query, index) => (
+          <button key={index} onClick={() => sendMessage(query)}>
+            {query}
+          </button>
+        ))}
       </div>
+      <form className="input-container" onSubmit={handleSubmit}> 
+        <input type="text" value={value} onChange={(e) => setValue(e.target.value)} />
+        <button type="submit">Send</button> 
+      </form>
     </div>
   )
 }
