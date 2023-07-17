@@ -20,6 +20,7 @@ function CompanyOverview({ symbol }) {
       setIsLoading(false);  // set loading state false when API call is done
     };
     fetchData();
+    
   }, [symbol]);  // The effect will run again if the symbol prop changes
 
   return (

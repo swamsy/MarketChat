@@ -3,8 +3,9 @@ const cors = require('cors');
 require('dotenv').config();
 require('./models/db');
 
-const chatbotRoutes = require('./routes/chatbot');
+const openaiRoutes = require('./routes/openai');
 const alphavantageRoutes = require('./routes/alphavantage');
+const finnhubRoutes = require('./routes/finnhub');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -12,8 +13,9 @@ const PORT = process.env.PORT || 5000;
 app.use(express.json());
 app.use(cors());
 
-app.use('/chatbot', chatbotRoutes);
+app.use('/openai', openaiRoutes);
 app.use('/alphavantage', alphavantageRoutes);
+app.use('/finnhub', finnhubRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);

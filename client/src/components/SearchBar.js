@@ -1,4 +1,5 @@
 import { useState, useCallback, useEffect } from 'react';
+import styled from 'styled-components';
 import debounce from 'lodash.debounce';
 import { searchSymbols } from '../services/api';
 
@@ -6,14 +7,15 @@ function SearchBar( { onSymbolSelected }) {
   const [input, setInput] = useState('');
   const [results, setResults] = useState([]);
   
+  // eslint-disable-next-line
   const search = useCallback(debounce(async (query) => {
     try {
       const matches = await searchSymbols(query)
-      setResults(matches.slice(0, 5))
+      setResults(matches.slice(0, 4))
     } catch (error) {
       console.error(error)
     }
-  }, 300), []);
+  }, 200), []);
 
   useEffect(() => {
     if (input) {  
@@ -36,14 +38,31 @@ function SearchBar( { onSymbolSelected }) {
     <div>
       <input type="text" value={input} onChange={handleChange} placeholder="Search by symbol or company name" />
       {results.map(result => (
-        <div key={result['1. symbol']}>
-          <button onClick={() => handleButtonClick(result['1. symbol'])}>
-            <p>{result['2. name']} ({result['1. symbol']})</p>
-          </button>
-        </div>
+      <div key={result['1. symbol']}>
+        <button onClick={() => handleButtonClick(result['1. symbol'])}>
+          {result.logo ? (
+            <img src={result.logo} alt={`${result['2. name']} logo`} />
+          ) : (
+            <PlaceholderLogo>
+              {result['1. symbol']}
+            </PlaceholderLogo>
+          )}
+          <p>{result['2. name']} ({result['1. symbol']})</p>
+        </button>
+      </div>
       ))}
     </div>
   );
 }
+
+const PlaceholderLogo = styled.div`
+  background-color: #ddd;
+  color: #333;
+  text-align: center;
+  line-height: 50px;
+  width: 50px;
+  height: 50px;
+  display: inline-block;
+`;
 
 export default SearchBar;

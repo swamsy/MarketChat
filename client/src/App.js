@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import CompanyOverview from './components/CompanyOverview';
-import Chatbot from './components/Chatbot';
 import SearchBar from './components/SearchBar';
+import Chatbot from './components/Chatbot';
+import CompanyOverview from './components/CompanyOverview';
+import Footer from './components/Footer';
 
 function App() {
   const [symbol, setSymbol] = useState('AAPL');
@@ -10,12 +11,12 @@ function App() {
     setSymbol(selectedSymbol);
   };
 
-
   return (  
     <>
       <SearchBar onSymbolSelected={handleSymbolSelected}/>
       <Chatbot symbol={symbol}/>
       <CompanyOverview symbol={symbol}/>
+      <Footer/>
     </>
   );
 }

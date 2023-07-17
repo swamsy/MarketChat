@@ -1,5 +1,6 @@
+// OpenAI
 export async function sendMessageToApi(message) {
-    const response = await fetch('http://localhost:5000/chatbot', {
+    const response = await fetch('http://localhost:5000/openai', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -12,6 +13,7 @@ export async function sendMessageToApi(message) {
     return data
 }
 
+// Alpha Vantage
 export async function getCompanyOverview(symbol) {
   const response = await fetch(`http://localhost:5000/alphavantage/company-overview/${symbol}`);
   const data = await response.json();
@@ -21,5 +23,23 @@ export async function getCompanyOverview(symbol) {
 export async function searchSymbols(query) {
   const response = await fetch(`http://localhost:5000/alphavantage/search/${query}`);
   const data = await response.json();
-  return data.bestMatches;
+  
+  const bestMatches = data.bestMatches.filter(match => !match['1. symbol'].includes('.'));
+  
+  // Fetch the company logos concurrently
+  const logos = await Promise.all(bestMatches.map(match => getCompanyLogo(match['1. symbol'])));
+
+  // Add logo to each match
+  for (let i = 0; i < bestMatches.length; i++) {
+    bestMatches[i].logo = logos[i];
+  }
+
+  return bestMatches;
+}
+
+// Finnhub
+export async function getCompanyLogo(symbol) {
+  const response = await fetch(`http://localhost:5000/finnhub/company-profile/${symbol}`);
+  const data = await response.json();
+  return data.logo;
 }
