@@ -14,6 +14,12 @@ export async function sendMessageToApi(message) {
 }
 
 // Alpha Vantage
+export async function getHistoricalData(symbol) {
+  const response = await fetch(`http://localhost:5000/alphavantage/historical/${symbol}`);
+  const data = await response.json();
+  return data;
+}
+
 export async function getCompanyOverview(symbol) {
   const response = await fetch(`http://localhost:5000/alphavantage/company-overview/${symbol}`);
   const data = await response.json();

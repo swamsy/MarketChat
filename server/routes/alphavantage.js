@@ -26,5 +26,18 @@ router.get('/search/:query', async (req, res) => {
       res.status(500).send('Error fetching search results');
     }
   });
-  
-  module.exports = router;
+
+router.get('/historical/:symbol', async (req, res) => {
+  try {
+      const symbol = req.params.symbol;
+      const response = await fetch(`https://www.alphavantage.co/query?function=TIME_SERIES_DAILY_ADJUSTED&symbol=${symbol}&apikey=${process.env.ALPHAVANTAGE_API_KEY}`);
+      const data = await response.json();
+      res.json(data);
+      console.log('Historical data fetched');
+  } catch (error) {
+      console.error(error);
+      res.status(500).send('Error fetching historical data');
+  } 
+});
+
+module.exports = router;
