@@ -6,6 +6,7 @@ function About({ companyData }) {
     <div className="about-section">
       <h1>About</h1>
       <div className="info-section">
+        <p>{companyData.Description}</p>
         <InfoSection 
           data={[
             ["Sector", companyData ? capitalizeWords(companyData.Sector) : "N/A"],

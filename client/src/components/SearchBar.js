@@ -15,7 +15,7 @@ function SearchBar( { onSymbolSelected }) {
     } catch (error) {
       console.error(error)
     }
-  }, 200), []);
+  }, 300), []);
 
   useEffect(() => {
     if (input) {  

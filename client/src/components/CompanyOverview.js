@@ -5,7 +5,7 @@ import { getCompanyOverview } from '../services/api';
 
 function CompanyOverview({ symbol }) {
   const [companyData, setCompanyData] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);  // Added this state
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -21,7 +21,7 @@ function CompanyOverview({ symbol }) {
     };
     fetchData();
     
-  }, [symbol]);  // The effect will run again if the symbol prop changes
+  }, [symbol]);
 
   return (
     <div>

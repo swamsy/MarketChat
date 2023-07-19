@@ -14,8 +14,20 @@ export async function sendMessageToApi(message) {
 }
 
 // Alpha Vantage
-export async function getHistoricalData(symbol) {
-  const response = await fetch(`http://localhost:5000/alphavantage/historical/${symbol}`);
+export async function getHistoricalData(symbol, timePeriod) {
+  let interval;
+  switch (timePeriod) {
+    case '1D':
+      interval = '5min';
+      break;
+    case '1W':
+    case '1M':
+      interval = '60min';
+      break;
+    default:
+  }
+
+  const response = await fetch(`http://localhost:5000/alphavantage/historical/${symbol}/${timePeriod}/${interval}`);
   const data = await response.json();
   return data;
 }
@@ -26,11 +38,12 @@ export async function getCompanyOverview(symbol) {
   return data;
 }
 
-export async function searchSymbols(query) {
+export async function searchSymbols(query) { // is some of this code better put here on the client side or in the finnhub.js route?
   const response = await fetch(`http://localhost:5000/alphavantage/search/${query}`);
   const data = await response.json();
   
-  const bestMatches = data.bestMatches.filter(match => !match['1. symbol'].includes('.'));
+  const bestMatches = data.bestMatches.filter(match => !match['1. symbol'].includes('.')); // fix this to filter by "region", it's 
+                                                                                           // included in the json response for each bestmatch result
   
   // Fetch the company logos concurrently
   const logos = await Promise.all(bestMatches.map(match => getCompanyLogo(match['1. symbol'])));
