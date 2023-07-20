@@ -30,9 +30,18 @@ export function capitalizeWords(str) {
   
 }
 
-export function formatDate(dateString) {
-    const date = moment.tz(dateString, 'America/New_York');
-    return date.format('MMM D, YYYY');
+export function formatDate(dateString, timePeriod) {
+    let date;
+    switch(timePeriod) {
+        case '1D':
+        case '1W':
+        case '1M':
+            date = moment.tz(dateString, 'America/New_York');
+            return date.format('MMM D, h:mm A');
+        default:
+            date = moment.tz(dateString, 'America/New_York');
+            return date.format('MMM D, YYYY');
+    }
 }
 
 export function formatChange(change) {

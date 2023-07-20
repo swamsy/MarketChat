@@ -41,11 +41,11 @@ router.get('/historical/:symbol/:period/:interval', async (req, res) => {
       case '1W':
       case '1M':
         APIType = 'TIME_SERIES_INTRADAY';
-        url = `https://www.alphavantage.co/query?function=${APIType}&symbol=${symbol}&interval=${interval}&outputsize=full&apikey=${process.env.ALPHAVANTAGE_API_KEY}`;
+        url = `https://www.alphavantage.co/query?function=${APIType}&symbol=${symbol}&interval=${interval}&extended_hours=false&outputsize=full&apikey=${process.env.ALPHAVANTAGE_API_KEY}`;
         break;
       default:
         APIType = 'TIME_SERIES_DAILY_ADJUSTED';
-        url = `https://www.alphavantage.co/query?function=${APIType}&symbol=${symbol}&apikey=${process.env.ALPHAVANTAGE_API_KEY}`;
+        url = `https://www.alphavantage.co/query?function=${APIType}&symbol=${symbol}&outputsize=full&apikey=${process.env.ALPHAVANTAGE_API_KEY}`;
     }
 
     const response = await fetch(url);
