@@ -51,3 +51,13 @@ export function formatChange(change) {
         return { value: `${change}`, color: 'red' };
     }
 }
+
+export function calculateChange(initialPrice, currentPrice) {
+    const change = currentPrice - initialPrice;
+    return change;
+}
+
+export function calculatePercentChange(change, initialPrice) {
+    const percentChange = (change / initialPrice) * 100;
+    return percentChange;
+}

@@ -42,8 +42,7 @@ export async function searchSymbols(query) { // is some of this code better put 
   const response = await fetch(`http://localhost:5000/alphavantage/search/${query}`);
   const data = await response.json();
   
-  const bestMatches = data.bestMatches.filter(match => !match['1. symbol'].includes('.')); // fix this to filter by "region", it's 
-                                                                                           // included in the json response for each bestmatch result
+  const bestMatches = data.bestMatches.filter(match => match['4. region'] === "United States"); // filter out non-US companies
   
   // Fetch the company logos concurrently
   const logos = await Promise.all(bestMatches.map(match => getCompanyLogo(match['1. symbol'])));

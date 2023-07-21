@@ -1,10 +1,9 @@
 import { useEffect, useState } from 'react';
 import { Line } from 'react-chartjs-2';
-import { getHistoricalData } from '../services/api';
+import { getHistoricalData, getCompanyOverview } from '../services/api';
 import { Chart, CategoryScale, LineController, LineElement, PointElement, LinearScale, Title, Tooltip, Legend } from 'chart.js';
 import { CrosshairPlugin } from 'chartjs-plugin-crosshair';
-import { formatChange, formatDate } from '../utilities/helperFunctions';
-
+import { calculateChange, calculatePercentChange, formatChange, formatDate } from '../utilities/helperFunctions';  
 Chart.register(CrosshairPlugin, LineController, LineElement, PointElement, CategoryScale, LinearScale, Title, Tooltip, Legend);
 
 Tooltip.positioners.topCrosshair = function(items) {
@@ -25,13 +24,26 @@ Tooltip.positioners.topCrosshair = function(items) {
     };
   };
 
-function StockGraph({ symbol, name }) {
-  const [chartData, setChartData] = useState(null);
-  const [hoveredPrice, setHoveredPrice] = useState(null);
-  const [hoveredChange, setHoveredChange] = useState(null);
-  const [hoveredPercentChange, setHoveredPercentChange] = useState(null);
-  const [timePeriod, setTimePeriod] = useState('1D');
-  const timePeriods = ["1D", "1W", "1M", "3M", "YTD", "1Y", "5Y"];
+function StockGraph({ symbol }) {
+    const [companyName, setCompanyName] = useState(null);
+    const [chartData, setChartData] = useState(null);
+    const [hoveredPrice, setHoveredPrice] = useState(null);
+    const [hoveredChange, setHoveredChange] = useState(null);
+    const [hoveredPercentChange, setHoveredPercentChange] = useState(null);
+    const [timePeriod, setTimePeriod] = useState('1D');
+    const timePeriods = ["1D", "1W", "1M", "3M", "YTD", "1Y", "5Y"];
+
+    
+    const [currentPrice, setCurrentPrice] = useState(null);
+    const [initialPrice, setInitialPrice] = useState(null);
+    const [change, setChange] = useState(null);
+    const [percentChange, setPercentChange] = useState(null);
+    
+    useEffect(() => {
+        getCompanyOverview(symbol)
+        .then(data => setCompanyName(data.Name))
+        .catch(err => console.error(err));
+    }, [symbol]);
 
     useEffect(() => {
         getHistoricalData(symbol, timePeriod).then(data => {
@@ -102,17 +114,32 @@ function StockGraph({ symbol, name }) {
             const dates = datePricePairs.map(pair => pair.date);
             const prices = datePricePairs.map(pair => pair.price);
 
-            // Data that changes when symbol or time period changes
             setChartData({ 
                 labels: dates,
                 datasets: [{
                 data: prices,
                 }]
             });
-        });
+
+            const currentPriceValue = Number(prices[prices.length - 1]);
+            const initialPriceValue = Number(prices[0]);
+            const changeValue = calculateChange(initialPriceValue, currentPriceValue);
+            const percentChangeValue = calculatePercentChange(changeValue, initialPriceValue);
+
+            setHoveredPrice(currentPriceValue.toFixed(2));
+            setHoveredChange(changeValue.toFixed(2));
+            setHoveredPercentChange(percentChangeValue.toFixed(2));
+
+            setCurrentPrice(currentPriceValue);
+            setInitialPrice(initialPriceValue);
+            setChange(changeValue);
+            setPercentChange(percentChangeValue);
+
+        })
+        .catch(err => console.error(err));
     }, [symbol, timePeriod]);
 
-    // Options that don't change when symbol changes
+    // Chart appearance options
     const options = {
         maintainAspectRatio: false,
         borderColor: 'blue',
@@ -172,9 +199,8 @@ function StockGraph({ symbol, name }) {
                 setHoveredPrice(price.toFixed(2));
     
                 // Calculate change and percentage change
-                const initialPrice = Number(chartData.datasets[0].data[0]);
-                const change = price - initialPrice;
-                const percentChange = (change / initialPrice) * 100;
+                const change = calculateChange(initialPrice, price);
+                const percentChange = calculatePercentChange(change, initialPrice);
     
                 // Store change and percentage change in state
                 setHoveredChange(change.toFixed(2));
@@ -182,27 +208,18 @@ function StockGraph({ symbol, name }) {
             }
         },
     };
-    const formattedHoveredChange = formatChange(hoveredChange);
-    const formattedPercentChange = formatChange(hoveredPercentChange);
-    
-    const currentPriceIndex = chartData?.datasets[0].data.length - 1;
-    const currentPrice = Number(chartData?.datasets[0].data[currentPriceIndex]);
-    const initialPrice = Number(chartData?.datasets[0].data[0]);
-    const change = currentPrice - initialPrice;
-    const percentChange = (change / currentPrice) * 100;
 
   return (
     <div className="StockGraph" style={{paddingLeft: '50px'}}>
-        <h1>{name}</h1>
+        <h1>{companyName}</h1>
         <h2>${hoveredPrice}</h2>
-        <h2 style={{ color: formattedHoveredChange.color }}>
-            {formattedHoveredChange.value} ({formattedPercentChange.value}%) {timePeriod}
+        <h2 style={{ color: formatChange(hoveredChange).color }}>
+            {formatChange(hoveredChange).value} ({formatChange(hoveredPercentChange).value}%) {timePeriod}
         </h2>
         <div 
             className="StockGraph-chart" 
             style={{height: '400px', width: '1200px'}}
             onMouseLeave={() => {
-                console.log(currentPrice);
                 setHoveredPrice(currentPrice.toFixed(2));
                 setHoveredChange(change.toFixed(2));
                 setHoveredPercentChange(percentChange.toFixed(2));
