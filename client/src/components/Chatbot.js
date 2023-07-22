@@ -4,10 +4,12 @@ import { sendMessageToApi } from '../services/api'
 function Chatbot({ symbol }) {  
   const [ value, setValue ] = useState('')
   const [ messages, setMessages] = useState([])
+  const [ isMarkTyping, setIsMarkTyping ] = useState(false)
   const suggestedQueries = ["What is MarketChat?", `Give me a financial analysis on ${symbol}`];
 
   const sendMessage = async (message) => {
     setMessages(messages => [...messages, {role: 'user', content: message}])
+    setIsMarkTyping(true);
     try {
       const data = await sendMessageToApi(message)
       setMessages(messages => [...messages, {role: 'Mark', content: data.choices[0].message.content}])
@@ -15,6 +17,7 @@ function Chatbot({ symbol }) {
     } catch (error) {
       console.error(error)
     }
+    setIsMarkTyping(false);
   }
 
   const handleSubmit = (e) => {
@@ -30,6 +33,7 @@ function Chatbot({ symbol }) {
             <p>{message.role}: {message.content}</p>
           </div>
         ))}
+        <p>{isMarkTyping && 'Mark is typing...'}</p>
       </div>
       <div className="suggested-queries">
         {suggestedQueries.map((query, index) => (
