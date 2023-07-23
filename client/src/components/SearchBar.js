@@ -29,8 +29,8 @@ function SearchBar( { onSymbolSelected }) {
     setInput(event.target.value);
   };
 
-  const handleButtonClick = (symbol) => {
-    onSymbolSelected(symbol);
+  const handleButtonClick = (symbol, companyName) => {
+    onSymbolSelected(symbol, companyName);
     setInput('');
   };
 
@@ -39,7 +39,7 @@ function SearchBar( { onSymbolSelected }) {
       <input type="text" value={input} onChange={handleChange} placeholder="Search by symbol or company name" />
       {results.map(result => (
       <div key={result['1. symbol']}>
-        <button onClick={() => handleButtonClick(result['1. symbol'])}>
+        <button onClick={() => handleButtonClick(result['1. symbol'], result['2. name'])}>
           {result.logo ? (
             <img src={result.logo} alt={`${result['2. name']} logo`} />
           ) : (

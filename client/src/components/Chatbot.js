@@ -2,20 +2,25 @@ import { useState } from 'react'
 import { sendMessageToApi } from '../services/api'
 
 function Chatbot({ symbol }) {  
-  const [ value, setValue ] = useState('')
-  const [ messages, setMessages] = useState([])
-  const [ isMarkTyping, setIsMarkTyping ] = useState(false)
+  const [ value, setValue ] = useState('');
+  const [ messages, setMessages] = useState([
+    {
+      role: "Mark",
+      content: "Hey there! I’m Mark, MarketChat’s AI chat bot. What’s up?"
+    }
+  ]);
+  const [ isMarkTyping, setIsMarkTyping ] = useState(false);
   const suggestedQueries = ["What is MarketChat?", `Give me a financial analysis on ${symbol}`];
 
   const sendMessage = async (message) => {
-    setMessages(messages => [...messages, {role: 'user', content: message}])
+    setMessages(messages => [...messages, {role: 'user', content: message}]);
     setIsMarkTyping(true);
     try {
-      const data = await sendMessageToApi(message)
-      setMessages(messages => [...messages, {role: 'Mark', content: data.choices[0].message.content}])
-      setValue('')   
+      const data = await sendMessageToApi(message);
+      setMessages(messages => [...messages, {role: 'Mark', content: data.choices[0].message.content}]);
+      setValue('');   
     } catch (error) {
-      console.error(error)
+      console.error(error);
     }
     setIsMarkTyping(false);
   }
@@ -33,7 +38,7 @@ function Chatbot({ symbol }) {
             <p>{message.role}: {message.content}</p>
           </div>
         ))}
-        <p>{isMarkTyping && 'Mark is typing...'}</p>
+        {isMarkTyping && <p>Mark is typing...</p>}
       </div>
       <div className="suggested-queries">
         {suggestedQueries.map((query, index) => (

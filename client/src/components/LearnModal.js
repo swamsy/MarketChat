@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import Modal from 'react-modal';
 import styled from 'styled-components';
 
@@ -22,6 +23,10 @@ const StyledModal = styled(Modal)`
 `;
 
 function LearnModal({ isOpen, onRequestClose }) {
+  useEffect(() => {
+    document.body.style.overflow = isOpen ? "hidden" : "unset";
+  }, [isOpen]);
+
   return (
     <StyledModal
       isOpen={isOpen}

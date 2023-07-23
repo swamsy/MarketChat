@@ -1,49 +1,26 @@
 import { useEffect, useState } from 'react';
+import styled from 'styled-components';
 import { Line } from 'react-chartjs-2';
-import { getHistoricalData, getCompanyOverview } from '../services/api';
-import { Chart, CategoryScale, LineController, LineElement, PointElement, LinearScale, Title, Tooltip, Legend } from 'chart.js';
+import { getHistoricalData } from '../services/api';
+import { Chart, CategoryScale, LineElement, PointElement, LinearScale } from 'chart.js';
 import { CrosshairPlugin } from 'chartjs-plugin-crosshair';
 import { calculateChange, calculatePercentChange, formatChange, formatDate } from '../utilities/helperFunctions';  
-Chart.register(CrosshairPlugin, LineController, LineElement, PointElement, CategoryScale, LinearScale, Title, Tooltip, Legend);
+Chart.register(CategoryScale, LineElement, PointElement, LinearScale, CrosshairPlugin);
 
-Tooltip.positioners.topCrosshair = function(items) {
-    const pos = Tooltip.positioners.average(items);
-  
-    // Happens when nothing is found
-    if (pos === false) {
-      return false;
-    }
-  
-    const chart = this.chart;
-  
-    return {
-      x: pos.x,
-      y: chart.scales.y.paddingTop,
-      xAlign: 'center',
-      yAlign: 'bottom',
-    };
-  };
-
-function StockGraph({ symbol }) {
-    const [companyName, setCompanyName] = useState(null);
+function StockGraph({ symbol, companyName }) {
     const [chartData, setChartData] = useState(null);
+    const [hasData, setHasData] = useState(true);
     const [hoveredPrice, setHoveredPrice] = useState(null);
     const [hoveredChange, setHoveredChange] = useState(null);
     const [hoveredPercentChange, setHoveredPercentChange] = useState(null);
+    const [hoveredDate, setHoveredDate] = useState(null);
     const [timePeriod, setTimePeriod] = useState('1D');
     const timePeriods = ["1D", "1W", "1M", "3M", "YTD", "1Y", "5Y"];
-
     
     const [currentPrice, setCurrentPrice] = useState(null);
     const [initialPrice, setInitialPrice] = useState(null);
     const [change, setChange] = useState(null);
     const [percentChange, setPercentChange] = useState(null);
-    
-    useEffect(() => {
-        getCompanyOverview(symbol)
-        .then(data => setCompanyName(data.Name))
-        .catch(err => console.error(err));
-    }, [symbol]);
 
     useEffect(() => {
         getHistoricalData(symbol, timePeriod).then(data => {
@@ -64,16 +41,20 @@ function StockGraph({ symbol }) {
                     closeKey = '5. adjusted close';
             }
 
+            //if(data['Error Message']) { // If ticker has daily data but no intraday data 
+            //    APIType = 'TIME_SERIES_DAILY_ADJUSTED'; // (probably gonna have to do something in alphavantage.js - that's where endpoint is specified)
+           // }
+
             // Create an array of dates and closing prices
             // Note: each daily time series date is at 4PM EST although it's not specified in the response from the API 
             let datePricePairs = Object.keys(data[timeSeriesKey]).reverse().map(date => ({ date, price: data[timeSeriesKey][date][closeKey] })); // datePricePairs = [{date: '2021-05-28', price: '124.61'},...]
 
             // Filter data for the correct timeframe
-            const endDate = new Date(datePricePairs[datePricePairs.length - 1].date);
+            const endDate = new Date();
             let startDate;
             switch (timePeriod) {
                 case '1D':
-                    startDate = new Date(endDate);
+                    startDate = new Date(datePricePairs[datePricePairs.length - 1].date);
                     startDate.setDate(startDate.getDate() - 1);
                     break;
                 case '1W':
@@ -111,6 +92,12 @@ function StockGraph({ symbol }) {
 
             // Filter the data to only include dates within the selected timeframe
             datePricePairs = datePricePairs.filter(pair => new Date(pair.date) >= startDate); // Only show data for selected time frame
+            if (datePricePairs.length === 0) { // no data available
+                setHasData(false);
+                return;
+              } else {
+                setHasData(true);
+              }
             const dates = datePricePairs.map(pair => pair.date);
             const prices = datePricePairs.map(pair => pair.price);
 
@@ -121,6 +108,7 @@ function StockGraph({ symbol }) {
                 }]
             });
 
+
             const currentPriceValue = Number(prices[prices.length - 1]);
             const initialPriceValue = Number(prices[0]);
             const changeValue = calculateChange(initialPriceValue, currentPriceValue);
@@ -129,6 +117,7 @@ function StockGraph({ symbol }) {
             setHoveredPrice(currentPriceValue.toFixed(2));
             setHoveredChange(changeValue.toFixed(2));
             setHoveredPercentChange(percentChangeValue.toFixed(2));
+            setHoveredDate(`${formatDate(dates[0], timePeriod)} - ${formatDate(dates[dates.length - 1], timePeriod)}`);
 
             setCurrentPrice(currentPriceValue);
             setInitialPrice(initialPriceValue);
@@ -136,7 +125,10 @@ function StockGraph({ symbol }) {
             setPercentChange(percentChangeValue);
 
         })
-        .catch(err => console.error(err));
+        .catch(err => {
+            console.error(err);
+            setHasData(false);
+        });
     }, [symbol, timePeriod]);
 
     // Chart appearance options
@@ -146,14 +138,9 @@ function StockGraph({ symbol }) {
         pointRadius: 0,
         pointHoverBackgroundColor: 'blue',
         animation: false,
-        layout: {
-            padding: {
-                top: 22
-            }
-        },
         scales: {
             x: {
-                display: false
+               display: false
             },
             y: {
                 display: false
@@ -168,21 +155,11 @@ function StockGraph({ symbol }) {
                 display: false
             },
             tooltip: {
-                enabled: true, 
-                position: 'topCrosshair',  // Use custom positioner
-                backgroundColor: 'transparent',
-                titleColor: 'black',
-                callbacks: {
-                    title: (context) => {
-                        const date = context[0].label;
-                        return formatDate(date, timePeriod);
-                    },
-                    label: () => '',
-                }
+                enabled: false
             },
             crosshair: {
                 line: {
-                    color: '#000000', 
+                    color: 'red', 
                     width: 1
                 },
                 zoom: {
@@ -205,17 +182,19 @@ function StockGraph({ symbol }) {
                 // Store change and percentage change in state
                 setHoveredChange(change.toFixed(2));
                 setHoveredPercentChange(percentChange.toFixed(2));
+                setHoveredDate(formatDate(chartData.labels[chartElement[0].index], timePeriod));
             }
         },
     };
 
   return (
-    <div className="StockGraph" style={{paddingLeft: '50px'}}>
+    <StyledStockGraph>
         <h1>{companyName}</h1>
         <h2>${hoveredPrice}</h2>
         <h2 style={{ color: formatChange(hoveredChange).color }}>
             {formatChange(hoveredChange).value} ({formatChange(hoveredPercentChange).value}%) {timePeriod}
         </h2>
+        <h3>{hoveredDate}</h3>
         <div 
             className="StockGraph-chart" 
             style={{height: '400px', width: '1200px'}}
@@ -223,9 +202,14 @@ function StockGraph({ symbol }) {
                 setHoveredPrice(currentPrice.toFixed(2));
                 setHoveredChange(change.toFixed(2));
                 setHoveredPercentChange(percentChange.toFixed(2));
+                setHoveredDate(`${formatDate(chartData.labels[0], timePeriod)} - ${formatDate(chartData.labels[chartData.labels.length - 1], timePeriod)}`);
               }}
         >
-            {chartData && <Line data={chartData} options={options} />}
+            {hasData ? (
+                chartData && <Line data={chartData} options={options} />
+            ) : (
+                <p style={{textAlign: 'center', paddingTop: '180px'}}>No data available</p>
+            )}
         </div>
         <div className="time-periods">
             {timePeriods.map(period => (
@@ -234,8 +218,12 @@ function StockGraph({ symbol }) {
                 </button>
             ))}
         </div>
-    </div>
+    </StyledStockGraph>
   );
 }
+
+const StyledStockGraph = styled.div`
+    padding-left: 50px;
+`;
 
 export default StockGraph;
