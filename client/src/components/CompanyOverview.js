@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import About from './About';
 import KeyData from './KeyData';
 import { getCompanyOverview } from '../services/api';
@@ -9,15 +9,15 @@ function CompanyOverview({ symbol }) {
 
   useEffect(() => {
     const fetchData = async () => {
-      setIsLoading(true);  // set loading state true when starting API call
+      setIsLoading(true);
       const data = await getCompanyOverview(symbol);
-      // Check if the data object is empty, if so set to null
+      // Alphavantage Company Overview returns an empty object if no data is available
       if (Object.keys(data).length === 0) {
         setCompanyData(null);
       } else {
         setCompanyData(data);
       }
-      setIsLoading(false);  // set loading state false when API call is done
+      setIsLoading(false);
     };
     fetchData();
     
@@ -25,14 +25,10 @@ function CompanyOverview({ symbol }) {
 
   return (
     <div>
-      {isLoading ? (
-        <p>Loading...</p>
-      ) : (
         <>
-          <About companyData={companyData}/>
-          <KeyData companyData={companyData}/>
+          <About companyData={companyData} isLoading={isLoading}/>
+          <KeyData companyData={companyData} isLoading={isLoading}/>
         </>
-      )}
     </div>
   );
 }

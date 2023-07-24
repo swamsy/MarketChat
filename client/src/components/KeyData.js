@@ -3,7 +3,7 @@ import LearnModal from './LearnModal';
 import InfoSection from './InfoSection';
 import { formatLargeNum } from '../utilities/helperFunctions';
 
-function KeyData({ companyData }) {
+function KeyData({ companyData, isLoading }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
@@ -22,7 +22,8 @@ function KeyData({ companyData }) {
             ["52 week range", companyData ? `$${companyData['52WeekLow']} - $${companyData['52WeekHigh']}` : "No data available"],
             ["Dividend yield", companyData ? `${(companyData.DividendYield * 100).toFixed(2)}%` : "No data available"],
             ["EPS", companyData ? companyData.EPS : "No data available"],
-          ]} 
+          ]}
+          isLoading={isLoading} 
         />
       </div>
     </div>

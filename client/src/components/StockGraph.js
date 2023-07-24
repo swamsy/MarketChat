@@ -4,7 +4,7 @@ import { Line } from 'react-chartjs-2';
 import { getHistoricalData } from '../services/api';
 import { Chart, CategoryScale, LineElement, PointElement, LinearScale } from 'chart.js';
 import { CrosshairPlugin } from 'chartjs-plugin-crosshair';
-import { calculateChange, calculatePercentChange, formatChange, formatDate } from '../utilities/helperFunctions';  
+import { calculateChange, calculatePercentChange, formatChange, formatDate, formatDateRange } from '../utilities/helperFunctions';  
 Chart.register(CategoryScale, LineElement, PointElement, LinearScale, CrosshairPlugin);
 
 function StockGraph({ symbol, companyName }) {
@@ -16,6 +16,7 @@ function StockGraph({ symbol, companyName }) {
     const [hoveredDate, setHoveredDate] = useState(null);
     const [timePeriod, setTimePeriod] = useState('1D');
     const timePeriods = ["1D", "1W", "1M", "3M", "YTD", "1Y", "5Y"];
+    const [isLoading, setIsLoading] = useState(true);
     
     const [currentPrice, setCurrentPrice] = useState(null);
     const [initialPrice, setInitialPrice] = useState(null);
@@ -23,6 +24,7 @@ function StockGraph({ symbol, companyName }) {
     const [percentChange, setPercentChange] = useState(null);
 
     useEffect(() => {
+        setIsLoading(true);
         getHistoricalData(symbol, timePeriod).then(data => {
             let timeSeriesKey;
             let closeKey;
@@ -55,7 +57,7 @@ function StockGraph({ symbol, companyName }) {
             switch (timePeriod) {
                 case '1D':
                     startDate = new Date(datePricePairs[datePricePairs.length - 1].date);
-                    startDate.setDate(startDate.getDate() - 1);
+                    startDate.setHours(9, 30, 0, 0);
                     break;
                 case '1W':
                     startDate = new Date(endDate);
@@ -108,7 +110,6 @@ function StockGraph({ symbol, companyName }) {
                 }]
             });
 
-
             const currentPriceValue = Number(prices[prices.length - 1]);
             const initialPriceValue = Number(prices[0]);
             const changeValue = calculateChange(initialPriceValue, currentPriceValue);
@@ -117,17 +118,19 @@ function StockGraph({ symbol, companyName }) {
             setHoveredPrice(currentPriceValue.toFixed(2));
             setHoveredChange(changeValue.toFixed(2));
             setHoveredPercentChange(percentChangeValue.toFixed(2));
-            setHoveredDate(`${formatDate(dates[0], timePeriod)} - ${formatDate(dates[dates.length - 1], timePeriod)}`);
+            setHoveredDate(formatDateRange(dates[0], dates[dates.length - 1], timePeriod));
 
             setCurrentPrice(currentPriceValue);
             setInitialPrice(initialPriceValue);
             setChange(changeValue);
             setPercentChange(percentChangeValue);
 
+            setIsLoading(false)
         })
         .catch(err => {
             console.error(err);
             setHasData(false);
+            setIsLoading(false);
         });
     }, [symbol, timePeriod]);
 
@@ -159,7 +162,7 @@ function StockGraph({ symbol, companyName }) {
             },
             crosshair: {
                 line: {
-                    color: 'red', 
+                    color: 'blue', 
                     width: 1
                 },
                 zoom: {
@@ -187,6 +190,18 @@ function StockGraph({ symbol, companyName }) {
         },
     };
 
+    const PlaceholderGraph = () => (
+        <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 1200 380" fill="none">
+        <path d="M201.582 66.9191C91.8465 4.76025 0 0 0 0V400H1198.99V121.88C1112.75 121.88 1066.47 24.1135 1001.61 28.7507C936.748 33.3878 868.743 150.355 797.928 163.102C727.113 175.85 681.532 107.801 600.546 121.88C519.559 135.959 483.804 312.057 398.964 306.87C314.124 301.684 311.317 129.078 201.582 66.9191Z" fill="url(#paint0_linear_3_177)"/>
+            <defs>
+                <linearGradient id="paint0_linear_3_177" x1="610.014" y1="400.001" x2="610.014" y2="0.00138283" gradientUnits="userSpaceOnUse">
+                    <stop stop-opacity="0"/>
+                    <stop offset="1" stop-opacity="0.2"/>
+                </linearGradient>
+            </defs>
+        </svg>
+      );
+
   return (
     <StyledStockGraph>
         <h1>{companyName}</h1>
@@ -197,15 +212,17 @@ function StockGraph({ symbol, companyName }) {
         <h3>{hoveredDate}</h3>
         <div 
             className="StockGraph-chart" 
-            style={{height: '400px', width: '1200px'}}
+            style={{height: '40vh', width: '60vw'}}
             onMouseLeave={() => {
                 setHoveredPrice(currentPrice.toFixed(2));
                 setHoveredChange(change.toFixed(2));
                 setHoveredPercentChange(percentChange.toFixed(2));
-                setHoveredDate(`${formatDate(chartData.labels[0], timePeriod)} - ${formatDate(chartData.labels[chartData.labels.length - 1], timePeriod)}`);
+                setHoveredDate(formatDateRange(chartData.labels[0], chartData.labels[chartData.labels.length - 1], timePeriod));
               }}
         >
-            {hasData ? (
+            {isLoading ? (
+                <PlaceholderGraph />
+            ) : hasData ? (
                 chartData && <Line data={chartData} options={options} />
             ) : (
                 <p style={{textAlign: 'center', paddingTop: '180px'}}>No data available</p>

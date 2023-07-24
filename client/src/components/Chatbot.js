@@ -10,7 +10,7 @@ function Chatbot({ symbol }) {
     }
   ]);
   const [ isMarkTyping, setIsMarkTyping ] = useState(false);
-  const suggestedQueries = ["What is MarketChat?", `Give me a financial analysis on ${symbol}`];
+  const suggestedQueries = ["What is MarketChat?", `Give me a financial analysis on ${symbol}`]; // ocassionally, the ai won't know the stock ticker, so feed it the company's name along with the ticker to minimize ai not knowing of the stock
 
   const sendMessage = async (message) => {
     setMessages(messages => [...messages, {role: 'user', content: message}]);

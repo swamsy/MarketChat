@@ -33,13 +33,13 @@ function LearnModal({ isOpen, onRequestClose }) {
       onRequestClose={onRequestClose}
       contentLabel="Learn About Key Data"
     >
-      <h2>Learn About Key Data</h2>
+      <h2>Key Data</h2>
       <ul>
-          <li>Market Cap: This is the total market value of a company's outstanding shares of stock. It is calculated by multiplying a company's shares outstanding by the current market price of one share.</li>
-          <li>P/E Ratio: This is the ratio for valuing a company that measures its current share price relative to its per-share earnings (EPS).</li>
-          <li>52 Week Range: This shows the lowest and highest price at which a stock has traded in the last year.</li>
-          <li>Dividend Yield: This indicates how much a company pays out in dividends each year relative to its share price.</li>
-          <li>EPS: Earnings per share (EPS) is the portion of a company's profit allocated to each outstanding share of common stock. Earnings per share serves as an indicator of a company's profitability.</li>
+          <li><b>Market Cap:</b> This is the total market value of a company's outstanding shares of stock. It is calculated by multiplying a company's shares outstanding by the current market price of one share.</li>
+          <li><b>P/E Ratio:</b> Price-to-earnings ratio is a way to value a company by comparing the price of a stock to its earnings. The ratio is calculated by dividing the company's current stock price by its earnings per share (EPS). The P/E ratio tells you how much you are paying for each dollar of earnings.</li>
+          <li><b>52 Week Range:</b> This shows the lowest and highest price at which a stock has traded during the previous 52 weeks.</li>
+          <li><b>Dividend Yield:</b> This indicates how much a company pays out in dividends each year relative to its share price. It is calculated by dividing the dividend per share by the price per share.</li>
+          <li><b>EPS:</b> Earnings per share is the portion of a company's profit allocated to each outstanding share of common stock. Earnings per share serves as an indicator of a company's profitability.</li>
       </ul>
     </StyledModal>
   );
