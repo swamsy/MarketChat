@@ -1,11 +1,14 @@
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import StockGraphPlaceholder from '../assets/StockGraphPlaceholder.svg';
 import { Line } from 'react-chartjs-2';
 import { getHistoricalData } from '../services/api';
 import { Chart, CategoryScale, LineElement, PointElement, LinearScale } from 'chart.js';
 import { CrosshairPlugin } from 'chartjs-plugin-crosshair';
 import { calculateChange, calculatePercentChange, formatChange, formatDate, formatDateRange } from '../utilities/helperFunctions';  
 Chart.register(CategoryScale, LineElement, PointElement, LinearScale, CrosshairPlugin);
+
+
 
 function StockGraph({ symbol, companyName }) {
     const [chartData, setChartData] = useState(null);
@@ -42,10 +45,6 @@ function StockGraph({ symbol, companyName }) {
                     timeSeriesKey = 'Time Series (Daily)';
                     closeKey = '5. adjusted close';
             }
-
-            //if(data['Error Message']) { // If ticker has daily data but no intraday data 
-            //    APIType = 'TIME_SERIES_DAILY_ADJUSTED'; // (probably gonna have to do something in alphavantage.js - that's where endpoint is specified)
-           // }
 
             // Create an array of dates and closing prices
             // Note: each daily time series date is at 4PM EST although it's not specified in the response from the API 
@@ -94,11 +93,14 @@ function StockGraph({ symbol, companyName }) {
 
             // Filter the data to only include dates within the selected timeframe
             datePricePairs = datePricePairs.filter(pair => new Date(pair.date) >= startDate); // Only show data for selected time frame
+            console.log(datePricePairs);
             if (datePricePairs.length === 0) { // no data available
                 setHasData(false);
+                setIsLoading(false);
                 return;
               } else {
                 setHasData(true);
+
               }
             const dates = datePricePairs.map(pair => pair.date);
             const prices = datePricePairs.map(pair => pair.price);
@@ -137,9 +139,9 @@ function StockGraph({ symbol, companyName }) {
     // Chart appearance options
     const options = {
         maintainAspectRatio: false,
-        borderColor: 'blue',
+        borderColor: '#14243d',
         pointRadius: 0,
-        pointHoverBackgroundColor: 'blue',
+        pointHoverBackgroundColor: '#14243d',
         animation: false,
         scales: {
             x: {
@@ -162,7 +164,7 @@ function StockGraph({ symbol, companyName }) {
             },
             crosshair: {
                 line: {
-                    color: 'blue', 
+                    color: '#14243d', 
                     width: 1
                 },
                 zoom: {
@@ -190,26 +192,14 @@ function StockGraph({ symbol, companyName }) {
         },
     };
 
-    const PlaceholderGraph = () => (
-        <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 1200 380" fill="none">
-        <path d="M201.582 66.9191C91.8465 4.76025 0 0 0 0V400H1198.99V121.88C1112.75 121.88 1066.47 24.1135 1001.61 28.7507C936.748 33.3878 868.743 150.355 797.928 163.102C727.113 175.85 681.532 107.801 600.546 121.88C519.559 135.959 483.804 312.057 398.964 306.87C314.124 301.684 311.317 129.078 201.582 66.9191Z" fill="url(#paint0_linear_3_177)"/>
-            <defs>
-                <linearGradient id="paint0_linear_3_177" x1="610.014" y1="400.001" x2="610.014" y2="0.00138283" gradientUnits="userSpaceOnUse">
-                    <stop stop-opacity="0"/>
-                    <stop offset="1" stop-opacity="0.2"/>
-                </linearGradient>
-            </defs>
-        </svg>
-      );
-
   return (
-    <StyledStockGraph>
-        <h1>{companyName}</h1>
+    <div className='StockGraph'>
+        <h2>{companyName}</h2>
         <h2>${hoveredPrice}</h2>
         <h2 style={{ color: formatChange(hoveredChange).color }}>
             {formatChange(hoveredChange).value} ({formatChange(hoveredPercentChange).value}%) {timePeriod}
         </h2>
-        <h3>{hoveredDate}</h3>
+        <p>{hoveredDate}</p>
         <div 
             className="StockGraph-chart" 
             style={{height: '40vh', width: '60vw'}}
@@ -221,7 +211,7 @@ function StockGraph({ symbol, companyName }) {
               }}
         >
             {isLoading ? (
-                <PlaceholderGraph />
+                <img src={StockGraphPlaceholder} alt="Stock Graph Placeholder"/>
             ) : hasData ? (
                 chartData && <Line data={chartData} options={options} />
             ) : (
@@ -235,12 +225,8 @@ function StockGraph({ symbol, companyName }) {
                 </button>
             ))}
         </div>
-    </StyledStockGraph>
+    </div>
   );
 }
-
-const StyledStockGraph = styled.div`
-    padding-left: 50px;
-`;
 
 export default StockGraph;
