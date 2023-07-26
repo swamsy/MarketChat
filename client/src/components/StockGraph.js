@@ -5,7 +5,7 @@ import { Line } from 'react-chartjs-2';
 import { getHistoricalData } from '../services/api';
 import { Chart, CategoryScale, LineElement, PointElement, LinearScale } from 'chart.js';
 import { CrosshairPlugin } from 'chartjs-plugin-crosshair';
-import { calculateChange, calculatePercentChange, formatChange, formatDate, formatDateRange } from '../utilities/helperFunctions';  
+import { calculateChange, calculatePercentChange, formatPriceChange, formatPercentChange, formatDate, formatDateRange } from '../utilities/helperFunctions';  
 Chart.register(CategoryScale, LineElement, PointElement, LinearScale, CrosshairPlugin);
 
 
@@ -93,7 +93,7 @@ function StockGraph({ symbol, companyName }) {
 
             // Filter the data to only include dates within the selected timeframe
             datePricePairs = datePricePairs.filter(pair => new Date(pair.date) >= startDate); // Only show data for selected time frame
-            console.log(datePricePairs);
+
             if (datePricePairs.length === 0) { // no data available
                 setHasData(false);
                 setIsLoading(false);
@@ -127,7 +127,8 @@ function StockGraph({ symbol, companyName }) {
             setChange(changeValue);
             setPercentChange(percentChangeValue);
 
-            setIsLoading(false)
+            setIsLoading(false);
+
         })
         .catch(err => {
             console.error(err);
@@ -193,16 +194,16 @@ function StockGraph({ symbol, companyName }) {
     };
 
   return (
-    <div className='StockGraph'>
-        <h2>{companyName}</h2>
-        <h2>${hoveredPrice}</h2>
-        <h2 style={{ color: formatChange(hoveredChange).color }}>
-            {formatChange(hoveredChange).value} ({formatChange(hoveredPercentChange).value}%) {timePeriod}
-        </h2>
-        <p>{hoveredDate}</p>
-        <div 
-            className="StockGraph-chart" 
-            style={{height: '40vh', width: '60vw'}}
+    <StockGraphContainer>
+        <h3 className='companyName'>{companyName}</h3>
+        <PriceData>
+            <h2>{isLoading ? <DataPlaceholder width='130px' height='42px'/> : hasData ? `$${hoveredPrice}` : '--.--'}</h2>
+            <Change color={hasData ? formatPriceChange(hoveredChange).color : 600}>
+                {isLoading ? <DataPlaceholder width='180px' height='28px'/> : hasData ? `${formatPriceChange(hoveredChange).value} (${formatPercentChange(hoveredPercentChange).value})` : '--.-- (--.--%)'}
+            </Change>   
+        </PriceData>
+        <p>{isLoading ? <DataPlaceholder width='170px' height='24px'/> : hasData ? hoveredDate : '-- / -- / ----'}</p>
+        <StockGraphChart
             onMouseLeave={() => {
                 setHoveredPrice(currentPrice.toFixed(2));
                 setHoveredChange(change.toFixed(2));
@@ -211,22 +212,100 @@ function StockGraph({ symbol, companyName }) {
               }}
         >
             {isLoading ? (
-                <img src={StockGraphPlaceholder} alt="Stock Graph Placeholder"/>
+                <img src={StockGraphPlaceholder} alt="Stock Graph Placeholder" style={{paddingTop:'50px'}}/>
             ) : hasData ? (
                 chartData && <Line data={chartData} options={options} />
             ) : (
                 <p style={{textAlign: 'center', paddingTop: '180px'}}>No data available</p>
             )}
-        </div>
-        <div className="time-periods">
+        </StockGraphChart>
+        <TimePeriodsContainer>
             {timePeriods.map(period => (
-                <button key={period} onClick={() => setTimePeriod(period)}>
+                <TimePeriod 
+                    key={period} 
+                    onClick={() => setTimePeriod(period)}
+                    isActive={period === timePeriod}
+                >
                     {period}
-                </button>
+                </TimePeriod>
             ))}
-        </div>
-    </div>
+        </TimePeriodsContainer>
+    </StockGraphContainer>
   );
 }
+
+const StockGraphContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+    border: 2px solid ${props => props.theme.colors[100]};
+    border-radius: 6px;
+
+    .companyName {
+        margin: 0;
+    }
+
+    p {
+        margin: 0.2rem 0; 
+        font-size: 14px;
+        color: ${props => props.theme.colors[500]};
+    }
+
+`;
+
+const DataPlaceholder = styled.div`
+    width: ${props => props.width};
+    height: ${props => props.height};
+    background-color: #cdcdcd;
+    border-radius: 4px;
+`
+
+const PriceData = styled.div`
+    h2 {
+        margin: 0.33rem 0;
+    }
+
+`;
+
+const Change = styled.h4`
+    color: ${props => props.theme.colors[props.color]};
+    margin: 0;
+
+`;
+
+const StockGraphChart = styled.div`
+    height: 40vh; 
+    width: 60vw;
+    border-top: 1px solid ${props => props.theme.colors[100]};
+    border-bottom: 1px solid ${props => props.theme.colors[100]};
+    padding: 0.3rem 0;
+
+
+
+`;
+
+const TimePeriodsContainer = styled.div`
+    display: flex;
+    margin: 1rem 0;
+    
+
+`;
+
+const TimePeriod = styled.div`
+    background-color: ${props => props.isActive ? props.theme.colors[100] : 'inherit'};
+    color: ${props => props.theme.colors[700]};
+    margin-right: 0.5rem;
+    border: 1px solid ${props => props.theme.colors[700]};
+    border-radius: 10px;
+    padding: 0.5rem;
+
+
+    &:hover {
+        background-color: ${props => props.theme.colors[50]};
+        cursor: pointer;
+    }
+
+`;
+
 
 export default StockGraph;

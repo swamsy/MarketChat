@@ -7,14 +7,14 @@ function About({ companyData, isLoading }) {
     <div className="about-section">
       <h1>About</h1>
       <div className="info-section">
-        <p>{isLoading ? <Spinner/> : companyData ? companyData.Description: "No data available"}</p>
+        <p>{isLoading ? <Spinner/> : companyData ? companyData.Description: "-"}</p>
         <InfoSection 
           data={[
-            ["Sector", companyData ? capitalizeWords(companyData.Sector) : "No data available"],
-            ["Industry", companyData ? capitalizeWords(companyData.Industry) : "No data available"],
-            ["Exchange", companyData ? companyData.Exchange : "No data available"],
-            ["Country", companyData ? companyData.Country : "No data available"],
-            ["Currency", companyData ? companyData.Currency : "No data available"],
+            ["Sector", companyData ? capitalizeWords(companyData.Sector) : "-"],
+            ["Industry", companyData ? capitalizeWords(companyData.Industry) : "-"],
+            ["Exchange", companyData ? companyData.Exchange : "-"],
+            ["Country", companyData ? companyData.Country : "-"],
+            ["Currency", companyData ? companyData.Currency : "-"],
           ]}
           isLoading={isLoading} 
         />

@@ -17,11 +17,11 @@ function KeyData({ companyData, isLoading }) {
       <div className="info-section">
         <InfoSection 
           data={[
-            ["Market cap", companyData ? formatLargeNum(companyData.MarketCapitalization) : "No data available"],
-            ["P/E ratio", companyData ? companyData.PERatio : "No data available"],
-            ["52 week range", companyData ? `$${companyData['52WeekLow']} - $${companyData['52WeekHigh']}` : "No data available"],
-            ["Dividend yield", companyData ? `${(companyData.DividendYield * 100).toFixed(2)}%` : "No data available"],
-            ["EPS", companyData ? companyData.EPS : "No data available"],
+            ["Market cap", companyData ? formatLargeNum(companyData.MarketCapitalization) : "-"],
+            ["P/E ratio", companyData ? companyData.PERatio : "-"],
+            ["52 week range", companyData ? `$${companyData['52WeekLow']} - $${companyData['52WeekHigh']}` : "-"],
+            ["Dividend yield", companyData ? `${(companyData.DividendYield * 100).toFixed(2)}%` : "-"],
+            ["EPS", companyData ? companyData.EPS : "-"],
           ]}
           isLoading={isLoading} 
         />

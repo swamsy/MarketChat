@@ -1,27 +1,35 @@
 import { useState } from 'react';
 import SearchBar from './components/SearchBar';
+import StockGraph from './components/StockGraph';
 import Chatbot from './components/Chatbot';
 import CompanyOverview from './components/CompanyOverview';
 import Footer from './components/Footer';
-import StockGraph from './components/StockGraph';
 
 import styled from 'styled-components';
 import GlobalStyles from './assets/GlobalStyles';
 import { ThemeProvider } from 'styled-components';
 import theme from './assets/Theme';
-import Logo from './assets/Logo.svg';
+import MarketChatLogo from './assets/MarketChatLogo.svg';
 
 
 const BodyWrapper = styled.div`
-  padding: 50px 150px;
+  padding: 4rem;
 `;
 
 const HeaderContainer = styled.div`
   display: flex;
-  padding: 1.5rem;
+  padding: 1.2rem 1.8rem;
   align-items: center;
   gap: 1.25rem;
+  //border-bottom: 2px solid ${props => props.theme.colors[100]};
+  box-shadow: 0px 0px 6px 0px rgba(0, 0, 0, 0.12);
 
+`;
+
+const HeroContainer = styled.div`
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
 `;
 
 
@@ -39,13 +47,15 @@ function App() {
       <ThemeProvider theme={theme}>
         <GlobalStyles/>
         <HeaderContainer>
-          <img src={Logo} alt="MarketChat Logo"/>
-          <h1 style={{flex: '1 0 0', margin: 0}} >MarketChat</h1>
+          <img src={MarketChatLogo} alt="MarketChat Logo" height='55px'/>
+          <h1 style={{flexGrow: 1, margin: 0}}>MarketChat</h1>
           <SearchBar onSymbolSelected={handleSymbolSelected}/>
         </HeaderContainer>
         <BodyWrapper>
-          <StockGraph symbol={symbol} companyName={companyName}/>
-          <Chatbot symbol={symbol}/>
+          <HeroContainer>
+            <StockGraph symbol={symbol} companyName={companyName}/>
+            <Chatbot symbol={symbol}/>
+          </HeroContainer>
           <CompanyOverview symbol={symbol}/>
         </BodyWrapper>
         <Footer/>

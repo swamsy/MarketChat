@@ -55,11 +55,19 @@ export function formatDateRange(startDate, endDate, timePeriod) {
     }
 }
 
-export function formatChange(change) {
+export function formatPriceChange(change) {
     if (change >= 0) {
-        return { value: `+${change}`, color: 'green' };
+        return { value: `+$${change}`, color: 'green' };
     } else {
-        return { value: `${change}`, color: 'red' };
+        return { value: `-$${Math.abs(change).toFixed(2)}`, color: 'red' }; 
+    }
+}
+
+export function formatPercentChange(change) {
+    if (change >= 0) {
+        return { value: `+${change}%`, color: 'green' };
+    } else {
+        return { value: `${change}%`, color: 'red' };
     }
 }
 

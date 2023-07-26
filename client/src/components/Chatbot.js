@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { sendMessageToApi } from '../services/api'
+import styled from 'styled-components'
 
 function Chatbot({ symbol }) {  
   const [ value, setValue ] = useState('');
@@ -31,28 +32,59 @@ function Chatbot({ symbol }) {
   }
 
   return (
-    <div className="chatbot">
-      <div className="chat-area">
+    <ChatbotContainer>
+      <ChatArea>
         {messages.map((message, i) => (
-          <div key={i} className={message.role}>
+          <Message key={i} className={message.role}>
             <p>{message.role}: {message.content}</p>
-          </div>
+          </Message>
         ))}
         {isMarkTyping && <p>Mark is typing...</p>}
-      </div>
-      <div className="suggested-queries">
+      </ChatArea>
+      <SendMessageSuggestedQueryContainer>
         {suggestedQueries.map((query, index) => (
-          <button key={index} onClick={() => sendMessage(query)}>
+          <SuggestedQuery key={index} onClick={() => sendMessage(query)}>
             {query}
-          </button>
+          </SuggestedQuery>
         ))}
-      </div>
-      <form className="input-container" onSubmit={handleSubmit}> 
+      <SendMessageContainer className="input-container" onSubmit={handleSubmit}> 
         <input type="text" value={value} onChange={(e) => setValue(e.target.value)} />
         <button type="submit">Send</button> 
-      </form>
-    </div>
+        </SendMessageContainer>
+      </SendMessageSuggestedQueryContainer>
+    </ChatbotContainer>
   )
 }
+
+const ChatbotContainer = styled.div`
+
+
+`;
+
+const ChatArea = styled.div`
+
+
+`;
+
+const Message = styled.div`
+
+
+`;
+
+const SendMessageSuggestedQueryContainer = styled.div`
+
+
+`;
+
+const SuggestedQuery = styled.div`
+
+
+`;
+
+const SendMessageContainer = styled.form`
+
+
+`;
+
 
 export default Chatbot;

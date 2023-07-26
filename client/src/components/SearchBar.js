@@ -38,12 +38,12 @@ function SearchBar( { onSymbolSelected }) {
 
   return (
     <SearchBarContainer>
-      <img src={SearchLogo} alt="Search Logo" />
+      <img src={SearchLogo} alt="Search Logo" height='15'/>
       <SearchInput 
         type="text" 
         value={input} 
         onChange={handleChange} 
-        placeholder="Search by symbol or company name" style={{flex: '1 0 0'}}
+        placeholder="Search by symbol or company name"
       />
       <ResultsContainer>
         {results.map(result => (
@@ -72,17 +72,25 @@ function SearchBar( { onSymbolSelected }) {
 const SearchBarContainer = styled.div`
   position: relative;
   display: flex;
-  padding: 1rem;
+  padding: 0.6rem;
   align-items: center;
-  gap: 1.1rem;
+  gap: 0.5rem;
   border-radius: 8px;
-  border: 2px solid #E3E9ED;
+  border: 2px solid ${props => props.theme.colors[100]};
+  min-width: 280px;
+
 `;
 
 const SearchInput = styled.input`
-  flex: 1 0 0;
+  flex-grow: 1;
   border: none;
   outline: none;
+  overflow: hidden;
+  font-size: 14px;
+
+  &::placeholder {
+    color: ${props => props.theme.colors[300]};
+  }
 `;
 
 const ResultsContainer = styled.div`
@@ -90,7 +98,7 @@ const ResultsContainer = styled.div`
   top: 115%;
   left: 0;
   right: 0;
-  background-color: ${props => props.theme.colors[600]};
+  background-color: ${props => props.theme.colors[900]};
 `;
 
 const ResultItem = styled.div`
@@ -99,9 +107,16 @@ const ResultItem = styled.div`
   padding: 0.6rem;
   border-bottom: ${props => `1px solid ${props.theme.colors[200]}`};
 
+  &:hover {
+    background-color: ${props => props.theme.colors[700]};
+    cursor: pointer;
+
+  }
+
   img {
-    min-width: 55px;
-    min-height: 55px;
+    max-width: 55px;
+    max-height: 55px;
+    width: 100%;
     object-fit: contain;
     border-radius: 6px;
     margin-right: 0.6rem;
@@ -112,8 +127,8 @@ const ResultItem = styled.div`
 const PlaceholderLogo = styled.div`
   display: flex;
   justify-content: center;
+  background-color: ${props => props.theme.colors[400]};
   align-items: center;
-  background-color: pink;
   margin-right: 0.6rem;
   min-width: 55px;
   min-height: 55px;
@@ -121,17 +136,17 @@ const PlaceholderLogo = styled.div`
 `;
 
 const PlaceholderLogoText = styled.div`
-  color: ${props => props.theme.colors[950]};
+  color: ${props => props.theme.colors[100]};
   text-align: center;
   font-size: 10px;
 
 `;
 
 const ResultText = styled.div`
-  color: ${props => props.theme.colors[950]};
   min-width: 0;
   
   p {
+    color: ${props => props.theme.colors[100]};
     font-size: 14px;
     margin: 0;
     white-space: nowrap;

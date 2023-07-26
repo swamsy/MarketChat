@@ -4,7 +4,7 @@ function InfoSection({ data, isLoading }) {
     return (
       <div className="info-section">
         {data.map(([key, value], i) => (
-          <div key={i} className="info-entry">
+          <div key={i}>
             <h4>{key}</h4>
             <p>{isLoading ? <Spinner/> : value}</p>
           </div>
