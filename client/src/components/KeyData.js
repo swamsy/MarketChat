@@ -2,19 +2,22 @@ import { useState } from 'react';
 import LearnModal from './LearnModal';
 import InfoSection from './InfoSection';
 import { formatLargeNum } from '../utilities/helperFunctions';
+import styled from 'styled-components'
 
 function KeyData({ companyData, isLoading }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
-    <div className="key-data-section">
-      <h1>Key Data</h1>
-      <h3 onClick={() => setIsModalOpen(true)}>Learn about Key Data</h3>
-      <LearnModal 
-        isOpen={isModalOpen}
-        onRequestClose={() => setIsModalOpen(false)}
-      />
-      <div className="info-section">
+    <KeyDataContainer>
+      <KeyDataContent>
+        <KeyDataHeader>
+          <h1>Key Data</h1>
+          <h4 onClick={() => setIsModalOpen(true)}>Learn about Key Data</h4>
+          <LearnModal 
+            isOpen={isModalOpen}
+            onRequestClose={() => setIsModalOpen(false)}
+          />
+        </KeyDataHeader>
         <InfoSection 
           data={[
             ["Market cap", companyData ? formatLargeNum(companyData.MarketCapitalization) : "-"],
@@ -25,9 +28,26 @@ function KeyData({ companyData, isLoading }) {
           ]}
           isLoading={isLoading} 
         />
-      </div>
-    </div>
+      </KeyDataContent>
+    </KeyDataContainer>
   );
 }
+
+const KeyDataContainer = styled.div`
+  padding-top: 4rem;
+`;
+
+const KeyDataContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+`;
+
+const KeyDataHeader = styled.div`
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+`;
+
 
 export default KeyData;

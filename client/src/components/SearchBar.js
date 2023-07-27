@@ -3,7 +3,7 @@ import debounce from 'lodash.debounce';
 import { searchSymbols } from '../services/api';
 
 import styled from 'styled-components';
-import SearchLogo from '../assets/SearchLogo.svg';
+import SearchIcon from '../assets/SearchIcon.svg';
 
 function SearchBar( { onSymbolSelected }) {
   const [input, setInput] = useState('');
@@ -38,7 +38,7 @@ function SearchBar( { onSymbolSelected }) {
 
   return (
     <SearchBarContainer>
-      <img src={SearchLogo} alt="Search Logo" height='15'/>
+      <img src={SearchIcon} alt="Search Logo" height='15'/>
       <SearchInput 
         type="text" 
         value={input} 
@@ -76,7 +76,7 @@ const SearchBarContainer = styled.div`
   align-items: center;
   gap: 0.5rem;
   border-radius: 8px;
-  border: 2px solid ${props => props.theme.colors[100]};
+  border: 1px solid ${props => props.theme.colors[100]};
   min-width: 280px;
 
 `;

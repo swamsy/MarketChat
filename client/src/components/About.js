@@ -1,12 +1,13 @@
 import InfoSection from './InfoSection';
 import { capitalizeWords } from '../utilities/helperFunctions';
 import Spinner from './BeatLoader';
+import styled from 'styled-components'
 
 function About({ companyData, isLoading }) {
   return (
-    <div className="about-section">
-      <h1>About</h1>
-      <div className="info-section">
+    <AboutContainer>
+      <AboutContent>
+        <h1>About</h1>
         <p>{isLoading ? <Spinner/> : companyData ? companyData.Description: "-"}</p>
         <InfoSection 
           data={[
@@ -18,9 +19,20 @@ function About({ companyData, isLoading }) {
           ]}
           isLoading={isLoading} 
         />
-      </div>
-    </div>
+      </AboutContent>
+    </AboutContainer>
   );
 }
+
+const AboutContainer = styled.div`
+  padding-top: 4rem;
+`;
+
+const AboutContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+`;
+
 
 export default About;

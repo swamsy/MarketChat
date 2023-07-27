@@ -195,7 +195,7 @@ function StockGraph({ symbol, companyName }) {
 
   return (
     <StockGraphContainer>
-        <h3 className='companyName'>{companyName}</h3>
+        <h3>{companyName}</h3>
         <PriceData>
             <h2>{isLoading ? <DataPlaceholder width='130px' height='42px'/> : hasData ? `$${hoveredPrice}` : '--.--'}</h2>
             <Change color={hasData ? formatPriceChange(hoveredChange).color : 600}>
@@ -237,14 +237,12 @@ function StockGraph({ symbol, companyName }) {
 const StockGraphContainer = styled.div`
     display: flex;
     flex-direction: column;
+    align-items: flex-start;
+    align-self: stretch;
     padding: 1rem;
-    border: 2px solid ${props => props.theme.colors[100]};
+    border: 1px solid ${props => props.theme.colors[100]};
     border-radius: 6px;
-
-    .companyName {
-        margin: 0;
-    }
-
+    
     p {
         margin: 0.2rem 0; 
         font-size: 14px;
@@ -269,7 +267,6 @@ const PriceData = styled.div`
 
 const Change = styled.h4`
     color: ${props => props.theme.colors[props.color]};
-    margin: 0;
 
 `;
 
@@ -286,7 +283,7 @@ const StockGraphChart = styled.div`
 
 const TimePeriodsContainer = styled.div`
     display: flex;
-    margin: 1rem 0;
+    margin-top: 1rem;
     
 
 `;

@@ -18,6 +18,7 @@ const GlobalStyles = createGlobalStyle`
     h1, h2, h3, h4, h5, h6 {
         color: ${(props) => props.theme.colors[950]};
         font-family: var(--main-font-family);
+        margin: 0;
     }
 
     h1 {
@@ -56,26 +57,11 @@ const GlobalStyles = createGlobalStyle`
         font-size: 16px;
         font-weight: 500;
         line-height: 1.75;
-    }
-
-    a {
-        text-decoration: none;
-        color: ${(props) => props.theme.colors[950]};
-        font-family: var(--main-font-family);
-        font-weight: 500;
-        font-size: 16px;
-        
-        &:hover {
-        color: ${(props) => props.theme.colors[950]};
-        }
+        margin: 0;
     }
 
     button {
         font-family: var(--main-font-family);
-
-        &:focus {
-        outline: none;
-        }
     }
 
     input {

@@ -28,8 +28,10 @@ const HeaderContainer = styled.div`
 
 const HeroContainer = styled.div`
   display: flex;
-  align-items: flex-end;
+  align-items: stretch;
   justify-content: space-between;
+  gap: 2.5rem;
+
 `;
 
 
@@ -48,7 +50,7 @@ function App() {
         <GlobalStyles/>
         <HeaderContainer>
           <img src={MarketChatLogo} alt="MarketChat Logo" height='55px'/>
-          <h1 style={{flexGrow: 1, margin: 0}}>MarketChat</h1>
+          <h1 style={{flexGrow: 1}}>MarketChat</h1>
           <SearchBar onSymbolSelected={handleSymbolSelected}/>
         </HeaderContainer>
         <BodyWrapper>

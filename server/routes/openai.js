@@ -21,7 +21,7 @@ router.post('/',  async (req, res) => {
             "content": req.body.message
             }
         ],
-        max_tokens: 10,
+        max_tokens: 5,
         });
 
         res.json(response.data)
