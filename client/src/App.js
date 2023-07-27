@@ -28,10 +28,7 @@ const HeaderContainer = styled.div`
 
 const HeroContainer = styled.div`
   display: flex;
-  align-items: stretch;
-  justify-content: space-between;
-  gap: 2.5rem;
-
+  gap: 2rem;  
 `;
 
 

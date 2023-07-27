@@ -84,7 +84,7 @@ const ChatbotContainer = styled.div`
   padding: 0.875rem;
   border: 1px solid ${props => props.theme.colors[100]};
   border-radius: 10px;
-  flex: 1;
+  height: 60vh;
 `;
 
 const ChatArea = styled.div`

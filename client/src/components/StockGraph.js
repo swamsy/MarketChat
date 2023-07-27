@@ -242,6 +242,7 @@ const StockGraphContainer = styled.div`
     padding: 1rem;
     border: 1px solid ${props => props.theme.colors[100]};
     border-radius: 6px;
+    flex: 1;
     
     p {
         margin: 0.2rem 0; 
@@ -271,13 +272,11 @@ const Change = styled.h4`
 `;
 
 const StockGraphChart = styled.div`
-    height: 40vh; 
-    width: 60vw;
+    flex: 1;
+    width: 100%;
     border-top: 1px solid ${props => props.theme.colors[100]};
     border-bottom: 1px solid ${props => props.theme.colors[100]};
     padding: 0.3rem 0;
-
-
 
 `;
 
