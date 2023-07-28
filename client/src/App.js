@@ -23,7 +23,6 @@ const HeaderContainer = styled.div`
   gap: 1.25rem;
   //border-bottom: 2px solid ${props => props.theme.colors[100]};
   box-shadow: 0px 0px 6px 0px rgba(0, 0, 0, 0.12);
-
 `;
 
 const HeroContainer = styled.div`

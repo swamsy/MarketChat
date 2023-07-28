@@ -13,7 +13,6 @@ const StyledModal = styled(Modal)`
   outline: none;
   max-width: 90%; 
   max-height: 90%; 
-  overflow-y: auto; 
 
   @media (min-width: 600px) { 
     max-width: 600px; 

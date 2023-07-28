@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import StockGraphPlaceholder from '../assets/StockGraphPlaceholder.svg';
 import { Line } from 'react-chartjs-2';
-import { getHistoricalData } from '../services/api';
+import { getHistoricalData, getCompanyLogo } from '../services/api';
 import { Chart, CategoryScale, LineElement, PointElement, LinearScale } from 'chart.js';
 import { CrosshairPlugin } from 'chartjs-plugin-crosshair';
 import { calculateChange, calculatePercentChange, formatPriceChange, formatPercentChange, formatDate, formatDateRange } from '../utilities/helperFunctions';  
@@ -11,6 +11,7 @@ Chart.register(CategoryScale, LineElement, PointElement, LinearScale, CrosshairP
 
 
 function StockGraph({ symbol, companyName }) {
+    const [companyLogo, setCompanyLogo] = useState(null);
     const [chartData, setChartData] = useState(null);
     const [hasData, setHasData] = useState(true);
     const [hoveredPrice, setHoveredPrice] = useState(null);
@@ -28,6 +29,7 @@ function StockGraph({ symbol, companyName }) {
 
     useEffect(() => {
         setIsLoading(true);
+        getCompanyLogo(symbol).then(logo => setCompanyLogo(logo));
         getHistoricalData(symbol, timePeriod).then(data => {
             let timeSeriesKey;
             let closeKey;
@@ -195,7 +197,10 @@ function StockGraph({ symbol, companyName }) {
 
   return (
     <StockGraphContainer>
-        <h3>{companyName}</h3>
+        <NameandLogo>
+            <StyledLogo src={companyLogo} alt={`${companyName} logo`}/>
+            <h3>{companyName}</h3>
+        </NameandLogo>
         <PriceData>
             <h2>{isLoading ? <DataPlaceholder width='130px' height='42px'/> : hasData ? `$${hoveredPrice}` : '--.--'}</h2>
             <Change color={hasData ? formatPriceChange(hoveredChange).color : 600}>
@@ -212,7 +217,7 @@ function StockGraph({ symbol, companyName }) {
               }}
         >
             {isLoading ? (
-                <img src={StockGraphPlaceholder} alt="Stock Graph Placeholder" style={{paddingTop:'50px'}}/>
+                <img src={StockGraphPlaceholder} alt="Stock Graph Placeholder"/>
             ) : hasData ? (
                 chartData && <Line data={chartData} options={options} />
             ) : (
@@ -240,8 +245,8 @@ const StockGraphContainer = styled.div`
     align-items: flex-start;
     align-self: stretch;
     padding: 1rem;
-    border: 1px solid ${props => props.theme.colors[100]};
-    border-radius: 6px;
+    box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.25);
+    border-radius: 8px;
     flex: 1;
     
     p {
@@ -249,6 +254,19 @@ const StockGraphContainer = styled.div`
         font-size: 14px;
         color: ${props => props.theme.colors[500]};
     }
+
+`;
+
+const NameandLogo = styled.div`
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+`;
+
+const StyledLogo = styled.img`
+    height: 35px;
+    width: 35px;
+    border-radius: 6px;
 
 `;
 
@@ -277,6 +295,12 @@ const StockGraphChart = styled.div`
     border-top: 1px solid ${props => props.theme.colors[100]};
     border-bottom: 1px solid ${props => props.theme.colors[100]};
     padding: 0.3rem 0;
+
+    img {
+        object-fit: cover;
+        height: 100%;
+        width: 100%;
+    }
 
 `;
 

@@ -68,6 +68,11 @@ const GlobalStyles = createGlobalStyle`
         font-family: var(--main-font-family);
     }
 
+    &::placeholder {
+        font-family: var(--main-font-family);
+        color: ${(props) => props.theme.colors[300]};
+    }
+
     @media (max-width: 576px) {
         h1 { font-size: 36px; }
         h2 { font-size: 32px; }

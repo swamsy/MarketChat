@@ -12,7 +12,7 @@ function KeyData({ companyData, isLoading }) {
       <KeyDataContent>
         <KeyDataHeader>
           <h1>Key Data</h1>
-          <h4 onClick={() => setIsModalOpen(true)}>Learn about Key Data</h4>
+          <LearnAboutKeyData onClick={() => setIsModalOpen(true)}>Learn about Key Data</LearnAboutKeyData>
           <LearnModal 
             isOpen={isModalOpen}
             onRequestClose={() => setIsModalOpen(false)}
@@ -47,6 +47,23 @@ const KeyDataHeader = styled.div`
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
+
+  h4 {
+    color: ${props => props.theme.colors[500]};
+  }
+`;
+
+const LearnAboutKeyData = styled.h4`
+  color: ${props => props.theme.colors[500]};
+  
+  &:hover {
+    cursor: pointer;
+    color: ${props => props.theme.colors[600]};
+  }
+
+  &:active {
+    color: ${props => props.theme.colors[700]};
+  }
 `;
 
 

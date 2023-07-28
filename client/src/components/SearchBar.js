@@ -8,6 +8,8 @@ import SearchIcon from '../assets/SearchIcon.svg';
 function SearchBar( { onSymbolSelected }) {
   const [input, setInput] = useState('');
   const [results, setResults] = useState([]);
+  const [isInputFocused, setInputFocused] = useState(false);
+  const [isMouseOverResults, setMouseOverResults] = useState(false);
   
   // eslint-disable-next-line
   const search = useCallback(debounce(async (query) => {
@@ -37,33 +39,40 @@ function SearchBar( { onSymbolSelected }) {
   };
 
   return (
-    <SearchBarContainer>
+    <SearchBarContainer isInputFocused={isInputFocused}>
       <img src={SearchIcon} alt="Search Logo" height='15'/>
       <SearchInput 
         type="text" 
         value={input} 
         onChange={handleChange} 
         placeholder="Search by symbol or company name"
+        onFocus={() => setInputFocused(true)}
+        onBlur={() => setInputFocused(false)}
       />
-      <ResultsContainer>
-        {results.map(result => (
-          <ResultItem 
-            key={result['1. symbol']}
-            onClick={() => handleButtonClick(result['1. symbol'], result['2. name'])}
-          >
-              {result.logo ? (
-                <img src={result.logo} alt={`${result['2. name']} logo`}/>
-              ) : (
-                <PlaceholderLogo>
-                  <PlaceholderLogoText>{result['1. symbol']}</PlaceholderLogoText>
-                </PlaceholderLogo>
-              )}
-              <ResultText>
-                <p>{result['1. symbol']}</p>
-                <p>{result['2. name']}</p>
-              </ResultText>
-          </ResultItem>
-        ))}
+      <ResultsContainer
+        onMouseEnter={() => setMouseOverResults(true)}
+        onMouseLeave={() => setMouseOverResults(false)}      
+      >
+        {isInputFocused || isMouseOverResults ? (
+          results.map(result => (
+            <ResultItem 
+              key={result['1. symbol']}
+              onClick={() => handleButtonClick(result['1. symbol'], result['2. name'])}
+            >
+                {result.logo ? (
+                  <img src={result.logo} alt={`${result['2. name']} logo`}/>
+                ) : (
+                  <PlaceholderLogo>
+                    <PlaceholderLogoText>{result['1. symbol']}</PlaceholderLogoText>
+                  </PlaceholderLogo>
+                )}
+                <ResultText>
+                  <p>{result['1. symbol']}</p>
+                  <p>{result['2. name']}</p>
+                </ResultText>
+            </ResultItem>
+          ))  
+        ) : null}
       </ResultsContainer>
     </SearchBarContainer>
   );
@@ -76,7 +85,7 @@ const SearchBarContainer = styled.div`
   align-items: center;
   gap: 0.5rem;
   border-radius: 8px;
-  border: 1px solid ${props => props.theme.colors[100]};
+  border: ${props => props.isInputFocused ? `1px solid ${props.theme.colors[400]}` : `1px solid ${props.theme.colors[100]}`};  
   min-width: 280px;
 
 `;
@@ -87,10 +96,6 @@ const SearchInput = styled.input`
   outline: none;
   overflow: hidden;
   font-size: 14px;
-
-  &::placeholder {
-    color: ${props => props.theme.colors[300]};
-  }
 `;
 
 const ResultsContainer = styled.div`
@@ -105,6 +110,7 @@ const ResultItem = styled.div`
   display: flex;
   align-items: center;
   padding: 0.6rem;
+  gap: 0.6rem;
   border-bottom: ${props => `1px solid ${props.theme.colors[200]}`};
 
   &:hover {
@@ -119,8 +125,6 @@ const ResultItem = styled.div`
     width: 100%;
     object-fit: contain;
     border-radius: 6px;
-    margin-right: 0.6rem;
-
   }
 `;
 

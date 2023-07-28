@@ -1,9 +1,9 @@
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { sendMessageToApi } from '../services/api'
 
 import styled from 'styled-components'
 import SendIcon from '../assets/SendIcon.svg';
-import UserIcon from '../assets/UserIcon.png';
+//import UserIcon from '../assets/UserIcon.png';
 import MarkIcon from '../assets/MarkIcon.png';
 
 function Chatbot({ symbol }) {  
@@ -16,6 +16,10 @@ function Chatbot({ symbol }) {
   ]);
   const [ isMarkTyping, setIsMarkTyping ] = useState(false);
   const suggestedQueries = ["What is MarketChat?", `Give me a financial analysis on ${symbol}`]; // ocassionally, the ai won't know the stock ticker, so feed it the company's name along with the ticker to minimize ai not knowing of the stock
+  const [clickedIndices, setClickedIndices] = useState([]);
+  
+  const chatEndRef = useRef(null);
+  const [isInputFocused, setInputFocused] = useState(false);
 
   const sendMessage = async (message) => {
     setMessages(messages => [...messages, {role: 'user', content: message}]);
@@ -30,8 +34,21 @@ function Chatbot({ symbol }) {
     setIsMarkTyping(false);
   }
 
+  useEffect(() => {
+    if (chatEndRef.current) {
+      chatEndRef.current.scrollTop = chatEndRef.current.scrollHeight;
+    }
+  }, [messages]);
+
+  useEffect(() => {
+    setClickedIndices(indices => indices.filter(index => index !== 1));
+  }, [symbol]);
+
   const handleSubmit = (e) => {
     e.preventDefault();
+    if(value.trim() === ''){ // don't allow user to send empty message
+      return;
+    }
     sendMessage(value);
   }
 
@@ -44,30 +61,43 @@ function Chatbot({ symbol }) {
 
   return (
     <ChatbotContainer>
-      <ChatArea>
+      <ChatbotHeader>
+        <h4>Chat with Mark</h4>
+      </ChatbotHeader>
+      <ChatArea ref={chatEndRef}>
         {messages.map((message, i) => (
           <Message key={i} className={message.role}>
             {message.role === 'Mark' && <StyledMarkIcon src={MarkIcon} alt="Mark Icon"/>}
             <MessageBubble className={message.role}>
               <p>{message.content}</p>
             </MessageBubble>
-            {message.role === 'user' && <StyledUserIcon src={UserIcon} alt="User Icon"/>}
           </Message>
         ))}
         {isMarkTyping && <p>Mark is typing...</p>}
       </ChatArea>
       <SendMessageSuggestedQueryContainer>
-        {suggestedQueries.map((query, index) => (
-          <SuggestedQuery key={index} onClick={() => sendMessage(query)}>
-            {query}
-          </SuggestedQuery>
-        ))}
-        <SendMessageContainer className="input-container" onSubmit={handleSubmit}> 
+        {suggestedQueries.map((query, index) => {
+          if (clickedIndices.includes(index)) {
+            return null;
+          }
+          return (
+            <SuggestedQuery key={index} onClick={() => {
+              sendMessage(query);
+              setClickedIndices(indices => [...indices, index]);
+            }}>
+              {query}
+            </SuggestedQuery>
+          );
+        })}
+        <SendMessageContainer className="input-container" onSubmit={handleSubmit} isInputFocused={isInputFocused}> 
           <textarea 
             type="text" 
             value={value} placeholder="Send a message..." 
             onChange={(e) => setValue(e.target.value)}
-            onKeyDown={handleKeyDown} 
+            onKeyDown={handleKeyDown}
+            onFocus={() => setInputFocused(true)}
+            onBlur={() => setInputFocused(false)}
+            rows="1"
           />
           <SendCircle type="submit">
             <img src={SendIcon} alt="Send Logo"/>
@@ -81,10 +111,21 @@ function Chatbot({ symbol }) {
 const ChatbotContainer = styled.div`
   display: flex;
   flex-direction: column;
-  padding: 0.875rem;
-  border: 1px solid ${props => props.theme.colors[100]};
-  border-radius: 10px;
-  height: 60vh;
+  box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.25);
+  border-radius: 8px;
+  height: 68vh;
+`;
+
+const ChatbotHeader = styled.div`
+  display: flex;
+  background-color: ${props => props.theme.colors[700]};
+  border-radius: 8px 8px 0px 0px;
+
+  h4 {
+    color: ${props => props.theme.colors[50]};
+    padding: 0.5rem;
+    margin-left: 0.2rem;
+  }
 `;
 
 const ChatArea = styled.div`
@@ -92,13 +133,26 @@ const ChatArea = styled.div`
   flex-direction: column;
   overflow-y: auto;
   flex: 1;
+  padding: 0.875rem;
+
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: ${props => props.theme.colors[100]};
+    border-radius: 10px;
+  }
   
+  &::-webkit-scrollbar-thumb:hover {
+    background: ${props => props.theme.colors[200]};
+  }
 `;
 
 const Message = styled.div`
   display: flex;
   align-items: flex-start;
-  max-width: 75%;
+  max-width: 80%;
   margin-bottom: 1.2rem;
   align-self: ${props => props.className === "user" ? 'flex-end' : 'flex-start'};
 
@@ -109,16 +163,17 @@ const Message = styled.div`
 
 const MessageBubble = styled.div`
   padding: 0.8rem;
-  background-color: ${props => props.className === "user" ? props.theme.colors[700] : props.theme.colors[50]};
+  background-color: ${props => props.className === "user" ? props.theme.colors[500] : props.theme.colors[50]};
   border-radius: ${props => props.className === "user" ? '1.875rem 0rem 1.875rem 1.875rem' : '0rem 1.875rem 1.875rem 1.875rem'};
+  white-space: pre-wrap;
 `;
 
-const StyledUserIcon = styled.img`
-  height: 1.5rem;
-  margin-left: 0.7rem;
-  border-radius: 50px;
-  border: 4px solid ${props => props.theme.colors[50]};
-`;
+//const StyledUserIcon = styled.img`
+//  height: 1.5rem;
+//  margin-left: 0.7rem;
+//  border-radius: 50px;
+//  border: 4px solid ${props => props.theme.colors[50]};
+//`;
 
 const StyledMarkIcon = styled.img`
   height: 1.5rem;
@@ -131,7 +186,7 @@ const StyledMarkIcon = styled.img`
 const SendMessageSuggestedQueryContainer = styled.div`
   display: flex;
   flex-direction: column;
-  border-top: 1px solid #ccc;
+  padding: 0.875rem;
 
 `;
 
@@ -156,18 +211,18 @@ const SuggestedQuery = styled.div`
 const SendMessageContainer = styled.form`
   display: flex;
   padding: 0.375em 0.375rem 0.375rem 0.8rem;
-  border: 1px solid ${props => props.theme.colors[100]};
+  border: ${props => props.isInputFocused ? `1px solid ${props.theme.colors[400]}` : `1px solid ${props.theme.colors[100]}`};  
   border-radius: 50px;
-  white-space: pre-wrap;
-  max-height: 100px;
-  overflow-y: auto;
 
   textarea {
     flex: 1;
+    padding: 0;
+    padding-top: 6px;
+    line-height: 1.5;
     border: none;
     outline: none;
     resize: none;
-    overflow-y: auto;
+    font-size: 16px;
   }
 `;
 
