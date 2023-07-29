@@ -24,6 +24,11 @@ export function formatLargeNum(value) {
     return num.toString();
 }
 
+export function formatNumberWithCommas(number) {
+    // number = 1234567 outputs 1,234,567
+    return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  }
+
 export function capitalizeWords(str) {
     // Capitalize the first letter of each word
     return str.toLowerCase().replace(/\b\w/g, (l) => l.toUpperCase());

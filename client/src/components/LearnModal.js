@@ -7,7 +7,7 @@ const StyledModal = styled(Modal)`
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background: gray;
+  background-color: gray;
   border-radius: 4px;
   padding: 20px;
   outline: none;

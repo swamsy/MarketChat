@@ -8,7 +8,7 @@ router.get('/company-profile/:symbol', async (req, res) => {
         const data = await response.json();
         res.json(data);
         console.log('Company profile fetched');
-    } catch (error) {
+    } catch (err) {
         console.error(err);
         res.status(500).send("Error fetching company profile");
     }

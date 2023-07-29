@@ -16,8 +16,8 @@ function SearchBar( { onSymbolSelected }) {
     try {
       const matches = await searchSymbols(query)
       setResults(matches.slice(0, 4))
-    } catch (error) {
-      console.error(error)
+    } catch (err) {
+      console.error(err)
     }
   }, 300), []);
 
@@ -39,7 +39,7 @@ function SearchBar( { onSymbolSelected }) {
   };
 
   return (
-    <SearchBarContainer isInputFocused={isInputFocused}>
+    <SearchBarContainer $isInputFocused={isInputFocused}> {/* transient prop */}
       <img src={SearchIcon} alt="Search Logo" height='15'/>
       <SearchInput 
         type="text" 
@@ -85,7 +85,7 @@ const SearchBarContainer = styled.div`
   align-items: center;
   gap: 0.5rem;
   border-radius: 8px;
-  border: ${props => props.isInputFocused ? `1px solid ${props.theme.colors[400]}` : `1px solid ${props.theme.colors[100]}`};  
+  border: ${props => props.$isInputFocused ? `1px solid ${props.theme.colors[400]}` : `1px solid ${props.theme.colors[100]}`};  
   min-width: 280px;
 
 `;
@@ -116,13 +116,11 @@ const ResultItem = styled.div`
   &:hover {
     background-color: ${props => props.theme.colors[700]};
     cursor: pointer;
-
   }
 
   img {
-    max-width: 55px;
-    max-height: 55px;
-    width: 100%;
+    height: 55px;
+    width: 55px;
     object-fit: contain;
     border-radius: 6px;
   }
@@ -130,10 +128,9 @@ const ResultItem = styled.div`
 
 const PlaceholderLogo = styled.div`
   display: flex;
+  align-items: center;
   justify-content: center;
   background-color: ${props => props.theme.colors[400]};
-  align-items: center;
-  margin-right: 0.6rem;
   min-width: 55px;
   min-height: 55px;
   border-radius: 6px;
@@ -143,7 +140,6 @@ const PlaceholderLogoText = styled.div`
   color: ${props => props.theme.colors[100]};
   text-align: center;
   font-size: 10px;
-
 `;
 
 const ResultText = styled.div`

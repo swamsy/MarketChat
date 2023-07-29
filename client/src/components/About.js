@@ -7,15 +7,15 @@ function About({ companyData, isLoading }) {
   return (
     <AboutContainer>
       <AboutContent>
-        <h1>About</h1>
-        <p>{isLoading ? <Spinner/> : companyData ? companyData.Description: "-"}</p>
+        <h2>About</h2>
+        <p>{isLoading ? <Spinner/> : companyData ? companyData.Description: "—"}</p>
         <InfoSection 
           data={[
-            ["Sector", companyData ? capitalizeWords(companyData.Sector) : "-"],
-            ["Industry", companyData ? capitalizeWords(companyData.Industry) : "-"],
-            ["Exchange", companyData ? companyData.Exchange : "-"],
-            ["Country", companyData ? companyData.Country : "-"],
-            ["Currency", companyData ? companyData.Currency : "-"],
+            ["Sector", companyData ? capitalizeWords(companyData.Sector) : "—"],
+            ["Industry", companyData ? capitalizeWords(companyData.Industry) : "—"],
+            ["Exchange", companyData ? companyData.Exchange : "—"],
+            ["Country", companyData ? companyData.Country : "—"],
+            ["Currency", companyData ? companyData.Currency : "—"],
           ]}
           isLoading={isLoading} 
         />
@@ -25,7 +25,7 @@ function About({ companyData, isLoading }) {
 }
 
 const AboutContainer = styled.div`
-  padding-top: 4rem;
+  padding-top: 2.5rem;
 `;
 
 const AboutContent = styled.div`

@@ -20,7 +20,7 @@ const HeaderContainer = styled.div`
   display: flex;
   padding: 1.2rem 1.8rem;
   align-items: center;
-  gap: 1.25rem;
+  gap: 1rem;
   //border-bottom: 2px solid ${props => props.theme.colors[100]};
   box-shadow: 0px 0px 6px 0px rgba(0, 0, 0, 0.12);
 `;

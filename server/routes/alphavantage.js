@@ -8,8 +8,8 @@ router.get('/company-overview/:symbol', async (req, res) => {
         const data = await response.json();
         res.json(data);
         console.log('Company data fetched');
-    } catch (error) {
-        console.error(error);
+    } catch (err) {
+        console.error(err);
         res.status(500).send('Error fetching company data');
     } 
 });
@@ -52,8 +52,8 @@ router.get('/historical/:symbol/:period/:interval', async (req, res) => {
     const data = await response.json();
     res.json(data);
     console.log(`Historical ${period} data fetched`);
-  } catch (error) {
-    console.error(error);
+  } catch (err) {
+    console.error(err);
     res.status(500).send('Error fetching historical data');
   } 
 });

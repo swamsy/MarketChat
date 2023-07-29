@@ -28,8 +28,8 @@ function Chatbot({ symbol }) {
       const data = await sendMessageToApi(message);
       setMessages(messages => [...messages, {role: 'Mark', content: data.choices[0].message.content}]);
       setValue('');   
-    } catch (error) {
-      console.error(error);
+    } catch (err) {
+      console.error(err);
     }
     setIsMarkTyping(false);
   }
@@ -89,7 +89,7 @@ function Chatbot({ symbol }) {
             </SuggestedQuery>
           );
         })}
-        <SendMessageContainer className="input-container" onSubmit={handleSubmit} isInputFocused={isInputFocused}> 
+        <SendMessageContainer onSubmit={handleSubmit} $isInputFocused={isInputFocused}> {/* transient prop */}
           <textarea 
             type="text" 
             value={value} placeholder="Send a message..." 
@@ -211,7 +211,7 @@ const SuggestedQuery = styled.div`
 const SendMessageContainer = styled.form`
   display: flex;
   padding: 0.375em 0.375rem 0.375rem 0.8rem;
-  border: ${props => props.isInputFocused ? `1px solid ${props.theme.colors[400]}` : `1px solid ${props.theme.colors[100]}`};  
+  border: ${props => props.$isInputFocused ? `1px solid ${props.theme.colors[400]}` : `1px solid ${props.theme.colors[100]}`};  
   border-radius: 50px;
 
   textarea {

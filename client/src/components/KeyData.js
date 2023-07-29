@@ -11,7 +11,7 @@ function KeyData({ companyData, isLoading }) {
     <KeyDataContainer>
       <KeyDataContent>
         <KeyDataHeader>
-          <h1>Key Data</h1>
+          <h2>Key Data</h2>
           <LearnAboutKeyData onClick={() => setIsModalOpen(true)}>Learn about Key Data</LearnAboutKeyData>
           <LearnModal 
             isOpen={isModalOpen}
@@ -20,11 +20,11 @@ function KeyData({ companyData, isLoading }) {
         </KeyDataHeader>
         <InfoSection 
           data={[
-            ["Market cap", companyData ? formatLargeNum(companyData.MarketCapitalization) : "-"],
-            ["P/E ratio", companyData ? companyData.PERatio : "-"],
-            ["52 week range", companyData ? `$${companyData['52WeekLow']} - $${companyData['52WeekHigh']}` : "-"],
-            ["Dividend yield", companyData ? `${(companyData.DividendYield * 100).toFixed(2)}%` : "-"],
-            ["EPS", companyData ? companyData.EPS : "-"],
+            ["Market cap", companyData ? formatLargeNum(companyData.MarketCapitalization) : "—"],
+            ["P/E ratio", companyData ? companyData.PERatio : "—"],
+            ["52 week range", companyData ? `$${companyData['52WeekLow']} - $${companyData['52WeekHigh']}` : "—"],
+            ["Dividend yield", companyData ? `${(companyData.DividendYield * 100).toFixed(2)}%` : "—"],
+            ["EPS", companyData ? companyData.EPS : "—"],
           ]}
           isLoading={isLoading} 
         />
@@ -34,7 +34,7 @@ function KeyData({ companyData, isLoading }) {
 }
 
 const KeyDataContainer = styled.div`
-  padding-top: 4rem;
+  padding-top: 2.5rem;
 `;
 
 const KeyDataContent = styled.div`

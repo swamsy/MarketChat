@@ -5,14 +5,14 @@ import { Line } from 'react-chartjs-2';
 import { getHistoricalData, getCompanyLogo } from '../services/api';
 import { Chart, CategoryScale, LineElement, PointElement, LinearScale } from 'chart.js';
 import { CrosshairPlugin } from 'chartjs-plugin-crosshair';
-import { calculateChange, calculatePercentChange, formatPriceChange, formatPercentChange, formatDate, formatDateRange } from '../utilities/helperFunctions';  
+import { calculateChange, calculatePercentChange, formatPriceChange, formatPercentChange, formatDate, formatDateRange, formatNumberWithCommas } from '../utilities/helperFunctions';  
 Chart.register(CategoryScale, LineElement, PointElement, LinearScale, CrosshairPlugin);
-
-
 
 function StockGraph({ symbol, companyName }) {
     const [companyLogo, setCompanyLogo] = useState(null);
+    const [isLogoLoading, setIsLogoLoading] = useState(true);// try setting these to false by default -- see how it affects on website load/reload
     const [chartData, setChartData] = useState(null);
+    const [isDataLoading, setIsDataLoading] = useState(true); // try setting these to false by default -- see how it affects on website load/reload
     const [hasData, setHasData] = useState(true);
     const [hoveredPrice, setHoveredPrice] = useState(null);
     const [hoveredChange, setHoveredChange] = useState(null);
@@ -20,7 +20,6 @@ function StockGraph({ symbol, companyName }) {
     const [hoveredDate, setHoveredDate] = useState(null);
     const [timePeriod, setTimePeriod] = useState('1D');
     const timePeriods = ["1D", "1W", "1M", "3M", "YTD", "1Y", "5Y"];
-    const [isLoading, setIsLoading] = useState(true);
     
     const [currentPrice, setCurrentPrice] = useState(null);
     const [initialPrice, setInitialPrice] = useState(null);
@@ -28,8 +27,17 @@ function StockGraph({ symbol, companyName }) {
     const [percentChange, setPercentChange] = useState(null);
 
     useEffect(() => {
-        setIsLoading(true);
-        getCompanyLogo(symbol).then(logo => setCompanyLogo(logo));
+        setIsLogoLoading(true);
+        getCompanyLogo(symbol).then(logo => {
+            setCompanyLogo(logo);
+            setIsLogoLoading(false);
+        })
+        .catch(err => {
+            console.error(err);
+            setIsLogoLoading(false);
+        });     
+        
+        setIsDataLoading(true);
         getHistoricalData(symbol, timePeriod).then(data => {
             let timeSeriesKey;
             let closeKey;
@@ -98,12 +106,12 @@ function StockGraph({ symbol, companyName }) {
 
             if (datePricePairs.length === 0) { // no data available
                 setHasData(false);
-                setIsLoading(false);
+                setIsDataLoading(false);
                 return;
               } else {
                 setHasData(true);
-
               }
+              
             const dates = datePricePairs.map(pair => pair.date);
             const prices = datePricePairs.map(pair => pair.price);
 
@@ -129,13 +137,13 @@ function StockGraph({ symbol, companyName }) {
             setChange(changeValue);
             setPercentChange(percentChangeValue);
 
-            setIsLoading(false);
+            setIsDataLoading(false);
 
         })
         .catch(err => {
             console.error(err);
             setHasData(false);
-            setIsLoading(false);
+            setIsDataLoading(false);
         });
     }, [symbol, timePeriod]);
 
@@ -198,16 +206,26 @@ function StockGraph({ symbol, companyName }) {
   return (
     <StockGraphContainer>
         <NameandLogo>
-            <StyledLogo src={companyLogo} alt={`${companyName} logo`}/>
+            {isLogoLoading ? (
+                <DataPlaceholder width='38px' height='38px'/>
+            ) : (
+                companyLogo ? (
+                    <StyledLogo src={companyLogo} alt={`${companyName} logo`}/>
+                ) : (
+                    <PlaceholderLogo>
+                        <PlaceholderLogoText>{symbol}</PlaceholderLogoText>
+                    </PlaceholderLogo>
+                )
+            )}
             <h3>{companyName}</h3>
         </NameandLogo>
         <PriceData>
-            <h2>{isLoading ? <DataPlaceholder width='130px' height='42px'/> : hasData ? `$${hoveredPrice}` : '--.--'}</h2>
+            <h2>{isDataLoading ? <DataPlaceholder width='130px' height='42px'/> : hasData ? `$${formatNumberWithCommas(hoveredPrice)}` : '--.--'}</h2>
             <Change color={hasData ? formatPriceChange(hoveredChange).color : 600}>
-                {isLoading ? <DataPlaceholder width='180px' height='28px'/> : hasData ? `${formatPriceChange(hoveredChange).value} (${formatPercentChange(hoveredPercentChange).value})` : '--.-- (--.--%)'}
+                {isDataLoading ? <DataPlaceholder width='180px' height='28px'/> : hasData ? `${formatNumberWithCommas(formatPriceChange(hoveredChange).value)} (${formatPercentChange(hoveredPercentChange).value})` : '--.-- (--.--%)'}
             </Change>   
         </PriceData>
-        <p>{isLoading ? <DataPlaceholder width='170px' height='24px'/> : hasData ? hoveredDate : '-- / -- / ----'}</p>
+        {isDataLoading ? <DataPlaceholder width='170px' height='24px'/> : hasData ? <p>{hoveredDate}</p> : <p>-- / -- / ----</p>}
         <StockGraphChart
             onMouseLeave={() => {
                 setHoveredPrice(currentPrice.toFixed(2));
@@ -216,10 +234,10 @@ function StockGraph({ symbol, companyName }) {
                 setHoveredDate(formatDateRange(chartData.labels[0], chartData.labels[chartData.labels.length - 1], timePeriod));
               }}
         >
-            {isLoading ? (
+            {isDataLoading ? (
                 <img src={StockGraphPlaceholder} alt="Stock Graph Placeholder"/>
             ) : hasData ? (
-                chartData && <Line data={chartData} options={options} />
+                /*chartData && */<Line data={chartData} options={options} />
             ) : (
                 <p style={{textAlign: 'center', paddingTop: '180px'}}>No data available</p>
             )}
@@ -229,7 +247,7 @@ function StockGraph({ symbol, companyName }) {
                 <TimePeriod 
                     key={period} 
                     onClick={() => setTimePeriod(period)}
-                    isActive={period === timePeriod}
+                    $isActive={period === timePeriod} // transient prop
                 >
                     {period}
                 </TimePeriod>
@@ -254,20 +272,35 @@ const StockGraphContainer = styled.div`
         font-size: 14px;
         color: ${props => props.theme.colors[500]};
     }
-
 `;
 
 const NameandLogo = styled.div`
     display: flex;
     align-items: center;
-    gap: 0.6rem;
+    gap: 0.5rem;
 `;
 
 const StyledLogo = styled.img`
-    height: 35px;
-    width: 35px;
-    border-radius: 6px;
+    height: 38px;
+    width: 38px;
+    object-fit: contain;
+    border-radius: 4px;
+`;
 
+const PlaceholderLogo = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: ${props => props.theme.colors[400]};
+  width: 38px;
+  height: 38px;
+  border-radius: 4px;
+`;
+
+const PlaceholderLogoText = styled.div`
+  color: ${props => props.theme.colors[100]};
+  text-align: center;
+  font-size: 8px;
 `;
 
 const DataPlaceholder = styled.div`
@@ -275,18 +308,17 @@ const DataPlaceholder = styled.div`
     height: ${props => props.height};
     background-color: #cdcdcd;
     border-radius: 4px;
-`
+    margin-bottom: 0.2rem;
+`;
 
 const PriceData = styled.div`
     h2 {
         margin: 0.33rem 0;
     }
-
 `;
 
 const Change = styled.h4`
     color: ${props => props.theme.colors[props.color]};
-
 `;
 
 const StockGraphChart = styled.div`
@@ -301,30 +333,25 @@ const StockGraphChart = styled.div`
         height: 100%;
         width: 100%;
     }
-
 `;
 
 const TimePeriodsContainer = styled.div`
     display: flex;
     margin-top: 1rem;
-    
-
 `;
 
 const TimePeriod = styled.div`
-    background-color: ${props => props.isActive ? props.theme.colors[100] : 'inherit'};
+    background-color: ${props => props.$isActive ? props.theme.colors[100] : 'inherit'};
     color: ${props => props.theme.colors[700]};
     margin-right: 0.5rem;
     border: 1px solid ${props => props.theme.colors[700]};
     border-radius: 10px;
     padding: 0.5rem;
 
-
     &:hover {
         background-color: ${props => props.theme.colors[50]};
         cursor: pointer;
     }
-
 `;
 
 

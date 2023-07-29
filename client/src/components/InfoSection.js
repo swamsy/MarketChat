@@ -5,10 +5,10 @@ function InfoSection({ data, isLoading }) {
     return (
       <InfoSectionContainer>
         {data.map(([key, value], i) => (
-          <div key={i}>
+          <InfoItem key={i}>
             <Category>{key}</Category>
             <p>{isLoading ? <Spinner/> : value}</p>
-          </div>
+          </InfoItem>
         ))}
       </InfoSectionContainer>
     );
@@ -16,13 +16,23 @@ function InfoSection({ data, isLoading }) {
 
   const InfoSectionContainer = styled.div`
     display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    padding-top: 1rem;
+    flex-flow: wrap;
+    margin-left: -48px;
+    margin-right: -48px;
+    width: calc(100% + 96px);
+    box-sizing: border-box;
   `;
   
+  const InfoItem = styled.div`
+    display: flex;
+    flex-direction: column;
+    flex: 0 0 calc(20% - 96px);
+    margin: 24px 48px;
+    width: calc(20% - 96px);
+    box-sizing: border-box;
+  `;
 
-  const Category = styled.h4`
+  const Category = styled.h5`
     padding-bottom: 0.5rem;
   `;
   
