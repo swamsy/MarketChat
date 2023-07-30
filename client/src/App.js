@@ -1,4 +1,4 @@
-import useSessionStorage from './hooks/useSessionStorage';
+import { useState } from 'react';
 import SearchBar from './components/SearchBar';
 import StockGraph from './components/StockGraph';
 import Chatbot from './components/Chatbot';
@@ -30,8 +30,8 @@ const HeroContainer = styled.div`
 `;
 
 function App() {
-  const [symbol, setSymbol] = useSessionStorage('symbol', 'AAPL');
-  const [companyName, setCompanyName] = useSessionStorage('companyName', 'Apple Inc');
+  const [symbol, setSymbol] = useState('AAPL');
+  const [companyName, setCompanyName] = useState('Apple Inc');
 
   const handleSymbolSelected = (selectedSymbol, companyName) => {
     setSymbol(selectedSymbol);

@@ -24,7 +24,6 @@ function Chatbot({ symbol }) {
   const sendMessage = async (message) => {
     setMessages(messages => [...messages, {role: 'user', content: message}]);
     setIsMarkTyping(true);
-
     saveChatMessage('user', message);
 
     try {

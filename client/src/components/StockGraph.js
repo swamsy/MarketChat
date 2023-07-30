@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import useSessionStorage from '../hooks/useSessionStorage';
 import styled from 'styled-components';
 import StockGraphPlaceholder from '../assets/StockGraphPlaceholder.svg';
 import { Line } from 'react-chartjs-2';
@@ -19,7 +18,7 @@ function StockGraph({ symbol, companyName }) {
     const [hoveredChange, setHoveredChange] = useState(null);
     const [hoveredPercentChange, setHoveredPercentChange] = useState(null);
     const [hoveredDate, setHoveredDate] = useState(null);
-    const [timePeriod, setTimePeriod] = useSessionStorage('timePeriod', '1D');
+    const [timePeriod, setTimePeriod] = useState('1D');
     const timePeriods = ["1D", "1W", "1M", "3M", "YTD", "1Y", "5Y"];
     
     const [currentPrice, setCurrentPrice] = useState(null);
@@ -236,7 +235,7 @@ function StockGraph({ symbol, companyName }) {
               }}
         >
             {isDataLoading ? (
-                <img src={StockGraphPlaceholder} alt="Stock Graph Placeholder"/>
+                <StyledStockGraphPlaceholder src={StockGraphPlaceholder} alt="Stock Graph Placeholder"/>
             ) : hasData ? (
                 <Line data={chartData} options={options} />
             ) : (
@@ -310,6 +309,13 @@ const DataPlaceholder = styled.div`
     background-color: #cdcdcd;
     border-radius: 4px;
     margin-bottom: 0.2rem;
+    animation: pulse 1.5s infinite ease-in-out;
+
+    @keyframes pulse {
+        0% { opacity: 0.5; }
+        50% { opacity: 1; }
+        100% { opacity: 0.5; }
+    }
 `;
 
 const Change = styled.h4`
@@ -327,6 +333,16 @@ const StockGraphChart = styled.div`
         object-fit: cover;
         height: 100%;
         width: 100%;
+    }
+`;
+
+const StyledStockGraphPlaceholder = styled.img`
+    animation: pulse 1.5s infinite ease-in-out;
+
+    @keyframes pulse {
+        0% { opacity: 0.5; }
+        50% { opacity: 1; }
+        100% { opacity: 0.5; }
     }
 `;
 
