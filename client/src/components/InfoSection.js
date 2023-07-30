@@ -14,27 +14,23 @@ function InfoSection({ data, isLoading }) {
     );
   }
 
-  const InfoSectionContainer = styled.div`
-    display: flex;
-    flex-flow: wrap;
-    margin-left: -48px;
-    margin-right: -48px;
-    width: calc(100% + 96px);
-    box-sizing: border-box;
-  `;
-  
-  const InfoItem = styled.div`
-    display: flex;
-    flex-direction: column;
-    flex: 0 0 calc(20% - 96px);
-    margin: 24px 48px;
-    width: calc(20% - 96px);
-    box-sizing: border-box;
-  `;
+const InfoSectionContainer = styled.div`
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-gap: 96px; /* Adjust the gap between grid items */
+  box-sizing: border-box;
+`;
 
-  const Category = styled.h5`
-    padding-bottom: 0.5rem;
-  `;
+const InfoItem = styled.div`
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  margin: 24px 0;
+`;
+
+const Category = styled.h5`
+  padding-bottom: 0.5rem;
+`;
   
-  export default InfoSection;
+export default InfoSection;
   

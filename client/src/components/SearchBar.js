@@ -1,5 +1,4 @@
-import { useState, useCallback, useEffect } from 'react';
-import debounce from 'lodash.debounce';
+import { useState, useEffect } from 'react';
 import { searchSymbols } from '../services/api';
 
 import styled from 'styled-components';
@@ -11,15 +10,14 @@ function SearchBar( { onSymbolSelected }) {
   const [isInputFocused, setInputFocused] = useState(false);
   const [isMouseOverResults, setMouseOverResults] = useState(false);
   
-  // eslint-disable-next-line
-  const search = useCallback(debounce(async (query) => {
+  const search =  async (query) => {
     try {
       const matches = await searchSymbols(query)
       setResults(matches.slice(0, 4))
     } catch (err) {
       console.error(err)
     }
-  }, 300), []);
+  };
 
   useEffect(() => {
     if (input) {  
@@ -27,7 +25,7 @@ function SearchBar( { onSymbolSelected }) {
     } else {
       setResults([]);
     }
-  }, [input, search]);
+  }, [input]);
 
   const handleChange = (event) => {
     setInput(event.target.value);

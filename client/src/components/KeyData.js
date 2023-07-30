@@ -53,7 +53,7 @@ const KeyDataHeader = styled.div`
   }
 `;
 
-const LearnAboutKeyData = styled.h4`
+const LearnAboutKeyData = styled.h5`
   color: ${props => props.theme.colors[500]};
   
   &:hover {

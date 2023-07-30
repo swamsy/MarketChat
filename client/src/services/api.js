@@ -1,15 +1,13 @@
 // OpenAI
 export async function sendMessageToApi(message) {
-    const response = await fetch('http://localhost:5000/openai', {
+    const response = await fetch('http://localhost:5000/openai/gpt-3.5-turbo', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({
-        message
-      })
-    })
-    const data = await response.json()
+      body: JSON.stringify({ message })
+    });
+    const data = await response.json() // wait for response from gpt-3.5
     return data
 }
 
@@ -60,4 +58,17 @@ export async function getCompanyLogo(symbol) {
   const response = await fetch(`http://localhost:5000/finnhub/company-profile/${symbol}`);
   const data = await response.json();
   return data.logo;
+}
+
+// MongoDB
+export async function saveChatMessage(role, content) {
+  const response = await fetch('http://localhost:5000/chats/save-message', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ role, content })
+  });
+  const data = await response.json();
+  return data;
 }

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import useSessionStorage from './hooks/useSessionStorage';
 import SearchBar from './components/SearchBar';
 import StockGraph from './components/StockGraph';
 import Chatbot from './components/Chatbot';
@@ -10,7 +10,6 @@ import GlobalStyles from './assets/GlobalStyles';
 import { ThemeProvider } from 'styled-components';
 import theme from './assets/Theme';
 import MarketChatLogo from './assets/MarketChatLogo.svg';
-
 
 const BodyWrapper = styled.div`
   padding: 4rem;
@@ -30,10 +29,9 @@ const HeroContainer = styled.div`
   gap: 2rem;  
 `;
 
-
 function App() {
-  const [symbol, setSymbol] = useState('AAPL');
-  const [companyName, setCompanyName] = useState('Apple Inc');
+  const [symbol, setSymbol] = useSessionStorage('symbol', 'AAPL');
+  const [companyName, setCompanyName] = useSessionStorage('companyName', 'Apple Inc');
 
   const handleSymbolSelected = (selectedSymbol, companyName) => {
     setSymbol(selectedSymbol);

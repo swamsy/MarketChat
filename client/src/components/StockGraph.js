@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import useSessionStorage from '../hooks/useSessionStorage';
 import styled from 'styled-components';
 import StockGraphPlaceholder from '../assets/StockGraphPlaceholder.svg';
 import { Line } from 'react-chartjs-2';
@@ -10,15 +11,15 @@ Chart.register(CategoryScale, LineElement, PointElement, LinearScale, CrosshairP
 
 function StockGraph({ symbol, companyName }) {
     const [companyLogo, setCompanyLogo] = useState(null);
-    const [isLogoLoading, setIsLogoLoading] = useState(true);// try setting these to false by default -- see how it affects on website load/reload
+    const [isLogoLoading, setIsLogoLoading] = useState(true);
     const [chartData, setChartData] = useState(null);
-    const [isDataLoading, setIsDataLoading] = useState(true); // try setting these to false by default -- see how it affects on website load/reload
-    const [hasData, setHasData] = useState(true);
+    const [isDataLoading, setIsDataLoading] = useState(true);
+    const [hasData, setHasData] = useState(false);
     const [hoveredPrice, setHoveredPrice] = useState(null);
     const [hoveredChange, setHoveredChange] = useState(null);
     const [hoveredPercentChange, setHoveredPercentChange] = useState(null);
     const [hoveredDate, setHoveredDate] = useState(null);
-    const [timePeriod, setTimePeriod] = useState('1D');
+    const [timePeriod, setTimePeriod] = useSessionStorage('timePeriod', '1D');
     const timePeriods = ["1D", "1W", "1M", "3M", "YTD", "1Y", "5Y"];
     
     const [currentPrice, setCurrentPrice] = useState(null);
@@ -35,8 +36,10 @@ function StockGraph({ symbol, companyName }) {
         .catch(err => {
             console.error(err);
             setIsLogoLoading(false);
-        });     
-        
+        });
+    }, [symbol]);
+
+    useEffect(() => {        
         setIsDataLoading(true);
         getHistoricalData(symbol, timePeriod).then(data => {
             let timeSeriesKey;
@@ -104,13 +107,12 @@ function StockGraph({ symbol, companyName }) {
             // Filter the data to only include dates within the selected timeframe
             datePricePairs = datePricePairs.filter(pair => new Date(pair.date) >= startDate); // Only show data for selected time frame
 
-            if (datePricePairs.length === 0) { // no data available
+            if (datePricePairs.length === 0) { // no data available for selected timeframe '{}'
                 setHasData(false);
                 setIsDataLoading(false);
                 return;
-              } else {
-                setHasData(true);
-              }
+            } 
+            setHasData(true);
               
             const dates = datePricePairs.map(pair => pair.date);
             const prices = datePricePairs.map(pair => pair.price);
@@ -219,15 +221,14 @@ function StockGraph({ symbol, companyName }) {
             )}
             <h3>{companyName}</h3>
         </NameandLogo>
-        <PriceData>
-            <h2>{isDataLoading ? <DataPlaceholder width='130px' height='42px'/> : hasData ? `$${formatNumberWithCommas(hoveredPrice)}` : '--.--'}</h2>
-            <Change color={hasData ? formatPriceChange(hoveredChange).color : 600}>
-                {isDataLoading ? <DataPlaceholder width='180px' height='28px'/> : hasData ? `${formatNumberWithCommas(formatPriceChange(hoveredChange).value)} (${formatPercentChange(hoveredPercentChange).value})` : '--.-- (--.--%)'}
-            </Change>   
-        </PriceData>
+        <h2 style={{margin: '0.33rem 0'}}>{isDataLoading ? <DataPlaceholder width='130px' height='42px'/> : hasData ? `$${formatNumberWithCommas(hoveredPrice)}` : '$--.--'}</h2>
+        <Change color={hasData ? formatPriceChange(hoveredChange).color : 600}>
+            {isDataLoading ? <DataPlaceholder width='180px' height='28px'/> : hasData ? `${formatNumberWithCommas(formatPriceChange(hoveredChange).value)} (${formatPercentChange(hoveredPercentChange).value})` : '$--.-- (--.--%)'}
+        </Change>   
         {isDataLoading ? <DataPlaceholder width='170px' height='24px'/> : hasData ? <p>{hoveredDate}</p> : <p>-- / -- / ----</p>}
         <StockGraphChart
             onMouseLeave={() => {
+                if (!hasData) return;
                 setHoveredPrice(currentPrice.toFixed(2));
                 setHoveredChange(change.toFixed(2));
                 setHoveredPercentChange(percentChange.toFixed(2));
@@ -237,7 +238,7 @@ function StockGraph({ symbol, companyName }) {
             {isDataLoading ? (
                 <img src={StockGraphPlaceholder} alt="Stock Graph Placeholder"/>
             ) : hasData ? (
-                /*chartData && */<Line data={chartData} options={options} />
+                <Line data={chartData} options={options} />
             ) : (
                 <p style={{textAlign: 'center', paddingTop: '180px'}}>No data available</p>
             )}
@@ -309,12 +310,6 @@ const DataPlaceholder = styled.div`
     background-color: #cdcdcd;
     border-radius: 4px;
     margin-bottom: 0.2rem;
-`;
-
-const PriceData = styled.div`
-    h2 {
-        margin: 0.33rem 0;
-    }
 `;
 
 const Change = styled.h4`

@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
-import { sendMessageToApi } from '../services/api'
+import { sendMessageToApi, saveChatMessage } from '../services/api'
 
 import styled from 'styled-components'
 import SendIcon from '../assets/SendIcon.svg';
@@ -24,9 +24,15 @@ function Chatbot({ symbol }) {
   const sendMessage = async (message) => {
     setMessages(messages => [...messages, {role: 'user', content: message}]);
     setIsMarkTyping(true);
+
+    saveChatMessage('user', message);
+
     try {
       const data = await sendMessageToApi(message);
       setMessages(messages => [...messages, {role: 'Mark', content: data.choices[0].message.content}]);
+
+      saveChatMessage('Mark', data.choices[0].message.content);
+
       setValue('');   
     } catch (err) {
       console.error(err);
@@ -100,7 +106,7 @@ function Chatbot({ symbol }) {
             rows="1"
           />
           <SendCircle type="submit">
-            <img src={SendIcon} alt="Send Logo"/>
+            <img src={SendIcon} alt="Send Icon"/>
           </SendCircle> 
         </SendMessageContainer>
       </SendMessageSuggestedQueryContainer>
@@ -215,6 +221,7 @@ const SendMessageContainer = styled.form`
   border-radius: 50px;
 
   textarea {
+    background-color: transparent;
     flex: 1;
     padding: 0;
     padding-top: 6px;

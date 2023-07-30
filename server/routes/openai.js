@@ -7,7 +7,7 @@ const configuration = new Configuration({
 });
 const openai = new OpenAIApi(configuration);
 
-router.post('/',  async (req, res) => {
+router.post('/gpt-3.5-turbo',  async (req, res) => {
     try {
         const response = await openai.createChatCompletion({
         model: "gpt-3.5-turbo",
