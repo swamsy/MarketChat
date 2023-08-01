@@ -4,23 +4,24 @@ import { searchSymbols } from '../services/api';
 import styled from 'styled-components';
 import SearchIcon from '../assets/SearchIcon.svg';
 
-function SearchBar( { onSymbolSelected }) {
+function SearchBar({ onSymbolSelected }) {
   const [input, setInput] = useState('');
   const [results, setResults] = useState([]);
   const [isInputFocused, setInputFocused] = useState(false);
   const [isMouseOverResults, setMouseOverResults] = useState(false);
-  
-  const search =  async (query) => {
+
+  async function search(query) {
     try {
-      const matches = await searchSymbols(query)
-      setResults(matches.slice(0, 4))
+      const matches = await searchSymbols(query);
+      console.log(matches);
+      setResults(matches);
     } catch (err) {
-      console.error(err)
+      console.error(err);
     }
   };
 
   useEffect(() => {
-    if (input) {  
+    if (input) {
       search(input);
     } else {
       setResults([]);
@@ -38,38 +39,38 @@ function SearchBar( { onSymbolSelected }) {
 
   return (
     <SearchBarContainer $isInputFocused={isInputFocused}> {/* transient prop */}
-      <img src={SearchIcon} alt="Search Logo" height='15'/>
-      <SearchInput 
-        type="text" 
-        value={input} 
-        onChange={handleChange} 
+      <img src={SearchIcon} alt="Search Logo" height='15' />
+      <SearchInput
+        type="text"
+        value={input}
+        onChange={handleChange}
         placeholder="Search by symbol or company name"
         onFocus={() => setInputFocused(true)}
         onBlur={() => setInputFocused(false)}
       />
       <ResultsContainer
         onMouseEnter={() => setMouseOverResults(true)}
-        onMouseLeave={() => setMouseOverResults(false)}      
+        onMouseLeave={() => setMouseOverResults(false)}
       >
         {isInputFocused || isMouseOverResults ? (
           results.map(result => (
-            <ResultItem 
-              key={result['1. symbol']}
-              onClick={() => handleButtonClick(result['1. symbol'], result['2. name'])}
+            <ResultItem
+              key={result.symbol}
+              onClick={() => handleButtonClick(result.symbol, result.name)}
             >
-                {result.logo ? (
-                  <img src={result.logo} alt={`${result['2. name']} logo`}/>
-                ) : (
-                  <PlaceholderLogo>
-                    <PlaceholderLogoText>{result['1. symbol']}</PlaceholderLogoText>
-                  </PlaceholderLogo>
-                )}
-                <ResultText>
-                  <p>{result['1. symbol']}</p>
-                  <p>{result['2. name']}</p>
-                </ResultText>
+              {result.logo ? (
+                <img src={result.logo} alt={`${result.name} logo`} />
+              ) : (
+                <PlaceholderLogo>
+                  <PlaceholderLogoText>{result.symbol}</PlaceholderLogoText>
+                </PlaceholderLogo>
+              )}
+              <ResultText>
+                <p>{result.symbol}</p>
+                <p>{result.name}</p>
+              </ResultText>
             </ResultItem>
-          ))  
+          ))
         ) : null}
       </ResultsContainer>
     </SearchBarContainer>

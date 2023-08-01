@@ -87,7 +87,7 @@ function LearnModal({ isOpen, onRequestClose }) {
     >
       <LearnModalHeader>
         <StyledXMark onClick={onRequestClose}>
-          <path d="M18 6L6 18M18 18L6 6.00001" stroke="black" stroke-width="2" stroke-linecap="round"/>
+          <path d="M18 6L6 18M18 18L6 6.00001" stroke-width="2" stroke-linecap="round"/>
         </StyledXMark>
         <TitleContainer>
           <h3>Key Data</h3>

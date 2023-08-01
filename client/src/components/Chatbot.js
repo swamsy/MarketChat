@@ -6,33 +6,33 @@ import SendIcon from '../assets/SendIcon.svg';
 //import UserIcon from '../assets/UserIcon.png';
 import MarkIcon from '../assets/MarkIcon.png';
 
-function Chatbot({ symbol }) {  
-  const [ value, setValue ] = useState('');
-  const [ messages, setMessages] = useState([
+function Chatbot({ symbol }) {
+  const [value, setValue] = useState('');
+  const [messages, setMessages] = useState([
     {
       role: "Mark",
       content: "Hey there! I’m Mark, MarketChat’s AI chat bot. What’s up?"
     }
   ]);
-  const [ isMarkTyping, setIsMarkTyping ] = useState(false);
+  const [isMarkTyping, setIsMarkTyping] = useState(false);
   const suggestedQueries = ["What is MarketChat?", `Give me a financial analysis on ${symbol}`]; // ocassionally, the ai won't know the stock ticker, so feed it the company's name along with the ticker to minimize ai not knowing of the stock
   const [clickedIndices, setClickedIndices] = useState([]);
-  
+
   const chatEndRef = useRef(null);
   const [isInputFocused, setInputFocused] = useState(false);
 
   const sendMessage = async (message) => {
-    setMessages(messages => [...messages, {role: 'user', content: message}]);
+    setMessages(messages => [...messages, { role: 'user', content: message }]);
     setIsMarkTyping(true);
     saveChatMessage('user', message);
 
     try {
       const data = await sendMessageToApi(message);
-      setMessages(messages => [...messages, {role: 'Mark', content: data.choices[0].message.content}]);
+      setMessages(messages => [...messages, { role: 'Mark', content: data.choices[0].message.content }]);
 
       saveChatMessage('Mark', data.choices[0].message.content);
 
-      setValue('');   
+      setValue('');
     } catch (err) {
       console.error(err);
     }
@@ -51,7 +51,7 @@ function Chatbot({ symbol }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if(value.trim() === ''){ // don't allow user to send empty message
+    if (value.trim() === '') { // don't allow user to send empty message
       return;
     }
     sendMessage(value);
@@ -72,7 +72,7 @@ function Chatbot({ symbol }) {
       <ChatArea ref={chatEndRef}>
         {messages.map((message, i) => (
           <Message key={i} className={message.role}>
-            {message.role === 'Mark' && <StyledMarkIcon src={MarkIcon} alt="Mark Icon"/>}
+            {message.role === 'Mark' && <StyledMarkIcon src={MarkIcon} alt="Mark Icon" />}
             <MessageBubble className={message.role}>
               <p>{message.content}</p>
             </MessageBubble>
@@ -95,9 +95,9 @@ function Chatbot({ symbol }) {
           );
         })}
         <SendMessageContainer onSubmit={handleSubmit} $isInputFocused={isInputFocused}> {/* transient prop */}
-          <textarea 
-            type="text" 
-            value={value} placeholder="Send a message..." 
+          <textarea
+            type="text"
+            value={value} placeholder="Send a message..."
             onChange={(e) => setValue(e.target.value)}
             onKeyDown={handleKeyDown}
             onFocus={() => setInputFocused(true)}
@@ -105,8 +105,8 @@ function Chatbot({ symbol }) {
             rows="1"
           />
           <SendCircle type="submit">
-            <img src={SendIcon} alt="Send Icon"/>
-          </SendCircle> 
+            <img src={SendIcon} alt="Send Icon" />
+          </SendCircle>
         </SendMessageContainer>
       </SendMessageSuggestedQueryContainer>
     </ChatbotContainer>

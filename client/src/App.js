@@ -6,9 +6,9 @@ import CompanyOverview from './components/CompanyOverview';
 import Footer from './components/Footer';
 
 import styled from 'styled-components';
-import GlobalStyles from './assets/GlobalStyles';
+import GlobalStyles from './styles/GlobalStyles';
 import { ThemeProvider } from 'styled-components';
-import theme from './assets/Theme';
+import theme from './styles/Theme';
 import MarketChatLogo from './assets/MarketChatLogo.svg';
 
 const BodyWrapper = styled.div`
