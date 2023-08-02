@@ -8,7 +8,6 @@ router.post('/save-message', async (req, res) => {
     const chatMessage = new ChatMessage({ role, content });
     await chatMessage.save()
     console.log('Message saved successfully');
-    res.status(200).send('Message saved successfully');
   } catch (err) {
     console.error(err);
     res.status(500).send('Error saving message');

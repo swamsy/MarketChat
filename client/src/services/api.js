@@ -36,16 +36,15 @@ export async function getCompanyOverview(symbol) {
   return data;
 }
 
-// Finnhub
-export async function getCompanyLogo(symbol) {
-  const response = await fetch(`http://localhost:5000/finnhub/company-profile/${symbol}`);
-  const data = await response.json();
-  return data.logo;
-}
-
 // MongoDB
 export async function searchSymbols(query) {
   const response = await fetch(`http://localhost:5000/results/search?query=${query}`);
+  const data = await response.json();
+  return data;
+}
+
+export async function getCompanyLogo(symbol) {
+  const response = await fetch(`http://localhost:5000/results/logo/${symbol}`);
   const data = await response.json();
   return data;
 }

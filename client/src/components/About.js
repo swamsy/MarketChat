@@ -1,6 +1,6 @@
 import InfoSection from './InfoSection';
 import { capitalizeWords } from '../utilities/helperFunctions';
-import Spinner from './BeatLoader';
+import { CustomBeatLoader } from './Loaders';
 import styled from 'styled-components'
 
 function About({ companyData, isLoading }) {
@@ -8,7 +8,7 @@ function About({ companyData, isLoading }) {
     <AboutContainer>
       <AboutContent>
         <h2>About</h2>
-        <p>{isLoading ? <Spinner/> : companyData ? companyData.Description: "—"}</p>
+        <p>{isLoading ? <CustomBeatLoader/> : companyData ? companyData.Description: "—"}</p>
         <InfoSection 
           data={[
             ["Sector", companyData ? capitalizeWords(companyData.Sector) : "—"],

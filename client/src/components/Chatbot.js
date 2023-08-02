@@ -5,6 +5,7 @@ import styled from 'styled-components'
 import SendIcon from '../assets/SendIcon.svg';
 //import UserIcon from '../assets/UserIcon.png';
 import MarkIcon from '../assets/MarkIcon.png';
+import { CustomPulseLoader } from './Loaders';
 
 function Chatbot({ symbol }) {
   const [value, setValue] = useState('');
@@ -78,7 +79,10 @@ function Chatbot({ symbol }) {
             </MessageBubble>
           </Message>
         ))}
-        {isMarkTyping && <p>Mark is typing...</p>}
+      <MarkTyping>
+        {isMarkTyping && <h6>Mark is typing</h6>}
+        {isMarkTyping && <CustomPulseLoader />}
+      </MarkTyping>
       </ChatArea>
       <SendMessageSuggestedQueryContainer>
         {suggestedQueries.map((query, index) => {
@@ -188,10 +192,17 @@ const StyledMarkIcon = styled.img`
 
 `;
 
+const MarkTyping = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 4px;
+`;
+
 const SendMessageSuggestedQueryContainer = styled.div`
   display: flex;
   flex-direction: column;
   padding: 0.875rem;
+  padding-top: 0;
 
 `;
 

@@ -1,6 +1,33 @@
 import Modal from 'react-modal';
 import styled from 'styled-components';
 
+function LearnModal({ isOpen, onRequestClose }) {
+  return (
+    <StyledModal
+      isOpen={isOpen}
+      onRequestClose={onRequestClose}
+      contentLabel="Learn About Key Data"
+    >
+      <LearnModalHeader>
+        <StyledXMark onClick={onRequestClose}>
+          <path d="M18 6L6 18M18 18L6 6.00001" strokeWidth="2" strokeLinecap="round"/>
+        </StyledXMark>
+        <TitleContainer>
+          <h3>Key Data</h3>
+        </TitleContainer>
+      </LearnModalHeader>
+      <Definition><b>Market Cap:</b> This is the total market value of a company's outstanding shares of stock. It is calculated by multiplying a company's shares outstanding by the current market price of one share.</Definition>
+      <Definition><b>P/E Ratio:</b> Price-to-earnings ratio is a way to value a company by comparing the price of a stock to its earnings. The ratio is calculated by dividing the company's current stock price by its earnings per share (EPS). The P/E ratio tells you how much you are paying for each dollar of earnings.</Definition>
+      <Definition><b>52 Week Range:</b> This shows the lowest and highest price at which a stock has traded during the previous 52 weeks.</Definition>
+      <Definition><b>Dividend Yield:</b> This indicates how much a company pays out in dividends each year relative to its share price. It is calculated by dividing the dividend per share by the price per share.</Definition>
+      <Definition><b>EPS:</b> Earnings per share is the portion of a company's profit allocated to each outstanding share of common stock. Earnings per share serves as an indicator of a company's profitability.</Definition>
+      <LearnModalFooter>
+        <CloseButton onClick={onRequestClose}><h6 style={{color: 'white'}}>Close</h6></CloseButton>
+      </LearnModalFooter>
+    </StyledModal>
+  );
+}
+
 const StyledModal = styled(Modal)`
   position: absolute;
   top: 50%;
@@ -53,6 +80,7 @@ const TitleContainer = styled.div`
 
 const Definition = styled.div`
   margin-bottom: 1.5rem;
+  color: ${props => props.theme.colors[950]};
 `;
 
 const LearnModalFooter = styled.div`
@@ -77,32 +105,5 @@ const CloseButton = styled.button`
     background-color: ${props => props.theme.colors[700]};
   }
 `;
-
-function LearnModal({ isOpen, onRequestClose }) {
-  return (
-    <StyledModal
-      isOpen={isOpen}
-      onRequestClose={onRequestClose}
-      contentLabel="Learn About Key Data"
-    >
-      <LearnModalHeader>
-        <StyledXMark onClick={onRequestClose}>
-          <path d="M18 6L6 18M18 18L6 6.00001" stroke-width="2" stroke-linecap="round"/>
-        </StyledXMark>
-        <TitleContainer>
-          <h3>Key Data</h3>
-        </TitleContainer>
-      </LearnModalHeader>
-      <Definition><b>Market Cap:</b> This is the total market value of a company's outstanding shares of stock. It is calculated by multiplying a company's shares outstanding by the current market price of one share.</Definition>
-      <Definition><b>P/E Ratio:</b> Price-to-earnings ratio is a way to value a company by comparing the price of a stock to its earnings. The ratio is calculated by dividing the company's current stock price by its earnings per share (EPS). The P/E ratio tells you how much you are paying for each dollar of earnings.</Definition>
-      <Definition><b>52 Week Range:</b> This shows the lowest and highest price at which a stock has traded during the previous 52 weeks.</Definition>
-      <Definition><b>Dividend Yield:</b> This indicates how much a company pays out in dividends each year relative to its share price. It is calculated by dividing the dividend per share by the price per share.</Definition>
-      <Definition><b>EPS:</b> Earnings per share is the portion of a company's profit allocated to each outstanding share of common stock. Earnings per share serves as an indicator of a company's profitability.</Definition>
-      <LearnModalFooter>
-        <CloseButton onClick={onRequestClose}><h6 style={{color: 'white'}}>Close</h6></CloseButton>
-      </LearnModalFooter>
-    </StyledModal>
-  );
-}
 
 export default LearnModal;

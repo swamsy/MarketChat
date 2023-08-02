@@ -13,7 +13,6 @@ function SearchBar({ onSymbolSelected }) {
   async function search(query) {
     try {
       const matches = await searchSymbols(query);
-      console.log(matches);
       setResults(matches);
     } catch (err) {
       console.error(err);

@@ -5,6 +5,12 @@ const SearchResult = require('../models/SearchResult');
 router.get('/search', async (req, res) => {
     try {
         const query = req.query.query;
+
+        // Check if the query is empty or whitespace only
+        if (!query || /^\s*$/.test(query)) {
+            return res.json([]);
+        }
+
         const searchResults = await SearchResult.aggregate([
             {
                 $search: {
@@ -14,7 +20,7 @@ router.get('/search', async (req, res) => {
                                 autocomplete: {
                                     query: query,
                                     path: "symbol",
-                                    score: { boost: { value: 5 } }, // prioritize stock ticker symbol matches over company name matches
+                                    score: { boost: { value: 2 } }, // prioritize stock ticker symbol matches over company name matches
                                     tokenOrder: "sequential"
                                 }
                             },
@@ -26,7 +32,8 @@ router.get('/search', async (req, res) => {
                                     tokenOrder: "sequential"
                                 }
                             }
-                        ]
+                        ],
+                        minimumShouldMatch: 1
                     }
                 }
             },
@@ -34,20 +41,34 @@ router.get('/search', async (req, res) => {
                 $project: {
                     symbol: 1,
                     name: 1,
+                    logo: 1,
                     score: { $meta: "searchScore" }
                 }
             },
             {
-                $limit: 10
+                $limit: 4
             }
         ]);
         res.json(searchResults);
-        console.log('Search results fetched', searchResults);
+        console.log('Search results fetched');
     } catch (err) {
         console.error(err);
         res.status(500).send('Error fetching search results');
     }
 
 });
+
+router.get('/logo/:symbol', async (req, res) => {
+    try {
+        const symbol = req.params.symbol;
+        const company = await SearchResult.findOne({ symbol: symbol });
+        res.json(company.logo);
+        console.log('Logo fetched');
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Error fetching logo');
+    }
+});
+
 
 module.exports = router;

@@ -66,6 +66,10 @@ const GlobalStyles = createGlobalStyle`
         font-family: var(--main-font-family);
     }
 
+    textarea {
+        font-family: var(--main-font-family);
+    }
+
     &::placeholder {
         font-family: var(--main-font-family);
         color: ${(props) => props.theme.colors[300]};

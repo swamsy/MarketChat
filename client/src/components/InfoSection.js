@@ -1,4 +1,4 @@
-import Spinner from "./BeatLoader";
+import { CustomBeatLoader } from './Loaders';
 import styled from 'styled-components'
 
 function InfoSection({ data, isLoading }) {
@@ -7,7 +7,7 @@ function InfoSection({ data, isLoading }) {
         {data.map(([key, value], i) => (
           <InfoItem key={i}>
             <Category>{key}</Category>
-            <p>{isLoading ? <Spinner/> : value}</p>
+            <p>{isLoading ? <CustomBeatLoader/> : value}</p>
           </InfoItem>
         ))}
       </InfoSectionContainer>
