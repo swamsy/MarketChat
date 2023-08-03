@@ -16,8 +16,8 @@ function InfoSection({ data, isLoading }) {
 
 const InfoSectionContainer = styled.div`
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  grid-gap: 96px; /* Adjust the gap between grid items */
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* adjust 150px to your minimum desirable width */
+  column-gap: 96px;
   box-sizing: border-box;
 `;
 

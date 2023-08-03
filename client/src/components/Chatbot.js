@@ -20,27 +20,27 @@ function Chatbot({ symbol }) {
   const [clickedIndices, setClickedIndices] = useState([]);
 
   const chatEndRef = useRef(null);
+  const textAreaRef = useRef(null);
   const [isInputFocused, setInputFocused] = useState(false);
 
   const sendMessage = async (message) => {
-    setMessages(messages => [...messages, { role: 'user', content: message }]);
-    setIsMarkTyping(true);
-    saveChatMessage('user', message);
-
     try {
+      setMessages(messages => [...messages, { role: 'user', content: message }]);
+      setIsMarkTyping(true);
+      saveChatMessage('user', message);
+
       const data = await sendMessageToApi(message);
       setMessages(messages => [...messages, { role: 'Mark', content: data.choices[0].message.content }]);
-
       saveChatMessage('Mark', data.choices[0].message.content);
 
-      setValue('');
+      setIsMarkTyping(false);
     } catch (err) {
       console.error(err);
+      setIsMarkTyping(false);
     }
-    setIsMarkTyping(false);
   }
 
-  useEffect(() => {
+  useEffect(() => { // scroll to bottom of chat when new message is added
     if (chatEndRef.current) {
       chatEndRef.current.scrollTop = chatEndRef.current.scrollHeight;
     }
@@ -56,6 +56,8 @@ function Chatbot({ symbol }) {
       return;
     }
     sendMessage(value);
+    setValue('');
+    textAreaRef.current.style.height = 'auto'; // Reset textarea height
   }
 
   const handleKeyDown = (e) => {
@@ -63,6 +65,12 @@ function Chatbot({ symbol }) {
       e.preventDefault();
       handleSubmit(e);
     }
+  };
+
+  const handleTextAreaChange = (e) => {
+    setValue(e.target.value);
+    textAreaRef.current.style.height = 'auto';  // Reset textarea height
+    textAreaRef.current.style.height = `${textAreaRef.current.scrollHeight}px`;
   };
 
   return (
@@ -99,18 +107,20 @@ function Chatbot({ symbol }) {
           );
         })}
         <SendMessageContainer onSubmit={handleSubmit} $isInputFocused={isInputFocused}> {/* transient prop */}
-          <textarea
+          <StyledTextArea
+            ref={textAreaRef}
             type="text"
-            value={value} placeholder="Send a message..."
-            onChange={(e) => setValue(e.target.value)}
+            value={value} 
+            placeholder="Send a message..."
+            onChange={handleTextAreaChange}
             onKeyDown={handleKeyDown}
             onFocus={() => setInputFocused(true)}
             onBlur={() => setInputFocused(false)}
             rows="1"
           />
-          <SendCircle type="submit">
+          <SendBox type="submit">
             <img src={SendIcon} alt="Send Icon" />
-          </SendCircle>
+          </SendBox>
         </SendMessageContainer>
       </SendMessageSuggestedQueryContainer>
     </ChatbotContainer>
@@ -123,6 +133,7 @@ const ChatbotContainer = styled.div`
   box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.25);
   border-radius: 8px;
   height: 68vh;
+  box-sizing: border-box;
 `;
 
 const ChatbotHeader = styled.div`
@@ -226,40 +237,59 @@ const SuggestedQuery = styled.div`
 
 const SendMessageContainer = styled.form`
   display: flex;
-  padding: 0.375em 0.375rem 0.375rem 0.8rem;
+  align-items: center;
+  position: relative;
+  padding: 0.75rem 0 0.75rem 0.8rem;
   border: ${props => props.$isInputFocused ? `1px solid ${props.theme.colors[400]}` : `1px solid ${props.theme.colors[100]}`};  
-  border-radius: 50px;
+  border-radius: 8px;
+  gap: 0.4rem;
+`;
 
-  textarea {
-    background-color: transparent;
-    flex: 1;
-    padding: 0;
-    padding-top: 6px;
-    line-height: 1.5;
-    border: none;
-    outline: none;
-    resize: none;
-    font-size: 16px;
+const StyledTextArea = styled.textarea`
+  flex: 1;
+  line-height: 1.5;
+  border: none;
+  outline: none;
+  resize: none;
+  padding: 0;
+  padding-right: 48px;
+  font-size: 16px;
+  max-height: 100px;
+
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: ${props => props.theme.colors[100]};
+    border-radius: 8px;
+  }
+  
+  &::-webkit-scrollbar-thumb:hover {
+    background: ${props => props.theme.colors[200]};
   }
 `;
 
-const SendCircle = styled.button`
+const SendBox = styled.button`
+  cursor: pointer;
   display: flex;
   justify-content: center;
   align-items: center;
   background-color: ${props => props.theme.colors[500]};
   padding: 0.6rem;
   border: none;
-  border-radius: 5rem;
+  border-radius: 6px;
+  position: absolute;
+  right: 10px;
+  bottom: 6px;
 
-  &:hover {
-    cursor: pointer;
-    background-color: ${props => props.theme.colors[600]};
-  }
-
-  &:active {
-    background-color: ${props => props.theme.colors[700]};
-  }
+  //&:hover {
+  //  background-color: ${props => props.theme.colors[600]};
+  //}
+  
+  //&:active {
+  //  background-color: ${props => props.theme.colors[700]};
+  //}
 
 `;
 

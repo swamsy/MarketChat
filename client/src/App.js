@@ -17,16 +17,33 @@ const BodyWrapper = styled.div`
 
 const HeaderContainer = styled.div`
   display: flex;
-  padding: 1.2rem 1.8rem;
   align-items: center;
-  gap: 1rem;
+  justify-content: space-between;
+  padding: 1.2rem 1.8rem;
   //border-bottom: 2px solid ${props => props.theme.colors[100]};
   box-shadow: 0px 0px 6px 0px rgba(0, 0, 0, 0.12);
 `;
 
-const HeroContainer = styled.div`
+const LogoTitle = styled.div`
   display: flex;
-  gap: 2rem;  
+  align-items: center;
+  gap: 1rem;
+
+`;
+
+const HeroContainer = styled.div`
+  display: grid;
+  grid-template-columns: 70% 30%;
+  gap: 2rem;
+
+  @media (max-width: 1250px) {
+    grid-template-columns: 60% 40%;
+  }
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto;
+  }
 `;
 
 function App() {
@@ -43,8 +60,10 @@ function App() {
       <ThemeProvider theme={theme}>
         <GlobalStyles/>
         <HeaderContainer>
-          <img src={MarketChatLogo} alt="MarketChat Logo" height='55px'/>
-          <h1 style={{flexGrow: 1}}>MarketChat</h1>
+          <LogoTitle>
+            <img src={MarketChatLogo} alt="MarketChat Logo" height='55px'/>
+            <h1>MarketChat</h1>
+          </LogoTitle>
           <SearchBar onSymbolSelected={handleSymbolSelected}/>
         </HeaderContainer>
         <BodyWrapper>

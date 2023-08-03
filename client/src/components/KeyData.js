@@ -45,7 +45,7 @@ const KeyDataContent = styled.div`
 
 const KeyDataHeader = styled.div`
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: space-between;
 
   h4 {
