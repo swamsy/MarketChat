@@ -11,41 +11,6 @@ import { ThemeProvider } from 'styled-components';
 import theme from './styles/Theme';
 import MarketChatLogo from './assets/MarketChatLogo.svg';
 
-const BodyWrapper = styled.div`
-  padding: 4rem;
-`;
-
-const HeaderContainer = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 1.2rem 1.8rem;
-  //border-bottom: 2px solid ${props => props.theme.colors[100]};
-  box-shadow: 0px 0px 6px 0px rgba(0, 0, 0, 0.12);
-`;
-
-const LogoTitle = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-
-`;
-
-const HeroContainer = styled.div`
-  display: grid;
-  grid-template-columns: 70% 30%;
-  gap: 2rem;
-
-  @media (max-width: 1250px) {
-    grid-template-columns: 60% 40%;
-  }
-
-  @media (max-width: 768px) {
-    grid-template-columns: 1fr;
-    grid-template-rows: auto auto;
-  }
-`;
-
 function App() {
   const [symbol, setSymbol] = useState('AAPL');
   const [companyName, setCompanyName] = useState('Apple Inc');
@@ -78,5 +43,58 @@ function App() {
     </>
   );
 }
+
+const BodyWrapper = styled.div`
+  padding: 4rem;
+
+  @media (max-width: 768px) {
+    padding: 2rem;
+  }
+`;
+
+const HeaderContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.2rem 1.8rem;
+  gap: 1rem;
+  //border-bottom: 2px solid ${props => props.theme.colors[100]};
+  box-shadow: 0px 0px 6px 0px rgba(0, 0, 0, 0.12);
+
+  @media (max-width: 768px) {
+    padding: 0.6rem 0.9rem;
+  }
+`;
+
+const LogoTitle = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+
+  @media (max-width: 768px) {
+    gap: 0.5rem;
+
+    h1 {
+      display: none;
+    }
+    
+  }
+
+`;
+
+const HeroContainer = styled.div`
+  display: grid;
+  grid-template-columns: 68% 1fr;
+  gap: 2rem;
+  
+  @media (max-width: 1250px) {
+    grid-template-columns: 58% 1fr;
+  }
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto;
+  }
+`;
 
 export default App;

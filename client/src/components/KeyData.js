@@ -53,8 +53,9 @@ const KeyDataHeader = styled.div`
   }
 `;
 
-const LearnAboutKeyData = styled.h5`
+const LearnAboutKeyData = styled.h3`
   color: ${props => props.theme.colors[500]};
+  font-size: 20px;
   
   &:hover {
     cursor: pointer;

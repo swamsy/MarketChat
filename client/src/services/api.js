@@ -11,6 +11,12 @@ export async function sendMessageToApi(message) {
   return data
 }
 
+export async function getSentimentData(symbol) {
+  const response = await fetch(`http://localhost:5000/alphavantage/market-news-sentiment/${symbol}`);
+  const data = await response.json();
+  return data;
+}
+
 // Alpha Vantage
 export async function getHistoricalData(symbol, timePeriod) {
   let interval;

@@ -102,7 +102,7 @@ function Chatbot({ symbol }) {
               sendMessage(query);
               setClickedIndices(indices => [...indices, index]);
             }}>
-              {query}
+              <p>{query}</p>
             </SuggestedQuery>
           );
         })}
@@ -130,16 +130,17 @@ function Chatbot({ symbol }) {
 const ChatbotContainer = styled.div`
   display: flex;
   flex-direction: column;
-  box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.25);
+  //box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.25);
+  box-shadow: rgba(0, 0, 0, 0.15) 0px 3px 15px;
   border-radius: 8px;
   height: 68vh;
-  box-sizing: border-box;
 `;
 
 const ChatbotHeader = styled.div`
   display: flex;
-  background-color: ${props => props.theme.colors[700]};
+  background-color: ${props => props.theme.colors[500]};
   border-radius: 8px 8px 0px 0px;
+  box-shadow: rgba(57, 57, 57, 0.26) 0px 2px 15px 0px;
 
   h4 {
     color: ${props => props.theme.colors[50]};
@@ -184,7 +185,7 @@ const Message = styled.div`
 const MessageBubble = styled.div`
   padding: 0.8rem;
   background-color: ${props => props.className === "user" ? props.theme.colors[500] : props.theme.colors[50]};
-  border-radius: ${props => props.className === "user" ? '1.875rem 0rem 1.875rem 1.875rem' : '0rem 1.875rem 1.875rem 1.875rem'};
+  border-radius: ${props => props.className === "user" ? '1rem 0rem 1rem 1rem' : '0rem 1rem 1rem 1rem'};
   white-space: pre-wrap;
 `;
 
@@ -196,7 +197,7 @@ const MessageBubble = styled.div`
 //`;
 
 const StyledMarkIcon = styled.img`
-  height: 1.5rem;
+  height: 32px;
   margin-right: 0.7rem;
   border-radius: 50px;
   border: 4px solid ${props => props.theme.colors[50]};
@@ -218,12 +219,16 @@ const SendMessageSuggestedQueryContainer = styled.div`
 `;
 
 const SuggestedQuery = styled.div`
-  color: ${props => props.theme.colors[700]};
-  border: 1px solid ${props => props.theme.colors[700]};
+  color: ${props => props.theme.colors[500]};
+  border: 1px solid ${props => props.theme.colors[500]};
   border-radius: 15px;
-  padding: 0.4rem;
+  padding: 0.2rem 0.4rem;
   margin-bottom: 0.6rem;
   align-self: flex-end;
+
+  p {
+    color: ${props => props.theme.colors[500]};
+  }
 
   &:hover {
     cursor: pointer;
@@ -253,8 +258,8 @@ const StyledTextArea = styled.textarea`
   resize: none;
   padding: 0;
   padding-right: 48px;
-  font-size: 16px;
   max-height: 100px;
+  
 
   &::-webkit-scrollbar {
     width: 6px;
@@ -283,6 +288,10 @@ const SendBox = styled.button`
   right: 10px;
   bottom: 6px;
 
+  @media (max-width: 768px) {
+    padding: 7px;
+  }
+  
   //&:hover {
   //  background-color: ${props => props.theme.colors[600]};
   //}

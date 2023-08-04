@@ -79,13 +79,18 @@ function SearchBar({ onSymbolSelected }) {
 const SearchBarContainer = styled.div`
   position: relative;
   display: flex;
-  padding: 0.6rem;
   align-items: center;
+  padding: 0.6rem;
   gap: 0.5rem;
   border-radius: 8px;
   border: ${props => props.$isInputFocused ? `1px solid ${props.theme.colors[400]}` : `1px solid ${props.theme.colors[100]}`};  
-  min-width: 280px;
+  max-width: 290px;
+  min-width: 290px;
 
+  @media (max-width: 768px) {
+   gap: 0.2rem;
+   min-width: 250px;
+  }
 `;
 
 const SearchInput = styled.input`
@@ -94,6 +99,11 @@ const SearchInput = styled.input`
   outline: none;
   overflow: hidden;
   font-size: 14px;
+
+  @media (max-width: 768px) {
+    font-size: 12px;
+  }
+
 `;
 
 const ResultsContainer = styled.div`

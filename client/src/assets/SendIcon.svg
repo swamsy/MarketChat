@@ -2,8 +2,8 @@
     <g id="send-logo">
         <g id="vuesax/linear/send">
             <g id="send">
-                <path id="Vector" d="M6.33999 2.82L12.0467 5.67333C14.6067 6.95333 14.6067 9.04666 12.0467 10.3267L6.33999 13.18C2.49999 15.1 0.933326 13.5267 2.85333 9.69333L3.43333 8.54C3.57999 8.24667 3.57999 7.76 3.43333 7.46666L2.85333 6.30666C0.933326 2.47333 2.50666 0.899998 6.33999 2.82Z" fill="white" stroke="#5c95d4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                <path id="Vector_2" d="M3.62665 8H7.22665" stroke="#5c95d4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path id="Vector" d="M6.33999 2.82L12.0467 5.67333C14.6067 6.95333 14.6067 9.04666 12.0467 10.3267L6.33999 13.18C2.49999 15.1 0.933326 13.5267 2.85333 9.69333L3.43333 8.54C3.57999 8.24667 3.57999 7.76 3.43333 7.46666L2.85333 6.30666C0.933326 2.47333 2.50666 0.899998 6.33999 2.82Z" fill="white" stroke="#3777c0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path id="Vector_2" d="M3.62665 8H7.22665" stroke="#3777c0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
             </g>
         </g>
     </g>

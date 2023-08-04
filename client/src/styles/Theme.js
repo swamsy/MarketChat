@@ -12,9 +12,8 @@ const theme = {
         800: '#1f416d',
         900: '#1e375a',
         950: '#14243d',
-        green: 'green',
+        green: '#118C42',
         red: 'red',
-        white: '#f3f6fc'
     },
 }
 

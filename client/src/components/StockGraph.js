@@ -262,10 +262,10 @@ const StockGraphContainer = styled.div`
     flex-direction: column;
     align-items: flex-start;
     padding: 1rem;
-    box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.25);
+    //box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.25);
+    box-shadow: rgba(0, 0, 0, 0.15) 0px 3px 15px;
     border-radius: 8px;
     height: 68vh;
-    box-sizing: border-box;
     
     p {
         margin: 0.2rem 0; 
@@ -285,6 +285,11 @@ const StyledLogo = styled.img`
     width: 38px;
     object-fit: contain;
     border-radius: 4px;
+
+    @media (max-width: 768px) {
+        height: 32px;
+        width: 32px;
+    }
 `;
 
 const PlaceholderLogo = styled.div`
@@ -323,7 +328,7 @@ const Change = styled.h4`
 `;
 
 const StockGraphChart = styled.div`
-    flex: 1;
+    height: 100%;
     width: 100%;
     border-top: 1px solid ${props => props.theme.colors[100]};
     border-bottom: 1px solid ${props => props.theme.colors[100]};
@@ -353,9 +358,9 @@ const TimePeriodsContainer = styled.div`
 
 const TimePeriod = styled.div`
     background-color: ${props => props.$isActive ? props.theme.colors[100] : 'inherit'};
-    color: ${props => props.theme.colors[700]};
+    color: ${props => props.theme.colors[500]};
     margin-right: 0.5rem;
-    border: 1px solid ${props => props.theme.colors[700]};
+    border: 1px solid ${props => props.theme.colors[500]};
     border-radius: 10px;
     padding: 0.5rem;
 

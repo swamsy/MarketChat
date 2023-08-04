@@ -5,6 +5,10 @@ const GlobalStyles = createGlobalStyle`
         --main-font-family: 'Inter', sans-serif;
 
     }
+
+    *, *:before, *:after {
+        box-sizing: border-box;
+    }
     
     body {
         background-color: ${(props) => props.theme.colors.backgroundColor};
@@ -20,17 +24,17 @@ const GlobalStyles = createGlobalStyle`
     }
 
     h1 {
-        font-weight: 700;
+        font-weight: 600;
         font-size: 40px;
     }
 
     h2 {
-        font-weight: 700;
+        font-weight: 600;
         font-size: 36px;
     }
 
     h3 {
-        font-weight: 700;
+        font-weight: 600;
         font-size: 30px;
     }
 
@@ -40,13 +44,13 @@ const GlobalStyles = createGlobalStyle`
     }
 
     h5 {
-        font-weight: 600;
+        font-weight: 500;
         font-size: 20px;
     }
     
     h6 {
-        font-weight: 600;
-        font-size: 16px;
+        font-weight: 500;
+        font-size: 18px;
     }
 
     p {
@@ -68,6 +72,7 @@ const GlobalStyles = createGlobalStyle`
 
     textarea {
         font-family: var(--main-font-family);
+        font-size: 16px;
     }
 
     &::placeholder {
@@ -75,14 +80,14 @@ const GlobalStyles = createGlobalStyle`
         color: ${(props) => props.theme.colors[300]};
     }
 
-    @media (max-width: 576px) {
-        h1 { font-size: 36px; }
-        h2 { font-size: 32px; }
+    @media (max-width: 768px) {
+        h1 { font-size: 34px; }
+        h2 { font-size: 30px; }
         h3 { font-size: 26px; }
-        h4 { font-size: 22px; }
-        h5 { font-size: 18px; }
-        h6 { font-size: 16px; }
-        p, a { font-size: 12px; }
+        h4 { font-size: 20px; }
+        h5 { font-size: 16px; }
+        h6 { font-size: 14px; }
+        p, a, textarea { font-size: 12px; }
     }
 `;
 

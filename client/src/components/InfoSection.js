@@ -16,19 +16,22 @@ function InfoSection({ data, isLoading }) {
 
 const InfoSectionContainer = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* adjust 150px to your minimum desirable width */
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
   column-gap: 96px;
-  box-sizing: border-box;
+
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));;
+  }
 `;
 
 const InfoItem = styled.div`
   display: flex;
   flex-direction: column;
-  box-sizing: border-box;
   margin: 24px 0;
 `;
 
-const Category = styled.h5`
+const Category = styled.h3`
+  font-size: 20px;
   padding-bottom: 0.5rem;
 `;
   
