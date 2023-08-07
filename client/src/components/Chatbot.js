@@ -3,7 +3,6 @@ import { sendMessageToApi, saveChatMessage } from '../services/api'
 
 import styled from 'styled-components'
 import SendIcon from '../assets/SendIcon.svg';
-//import UserIcon from '../assets/UserIcon.png';
 import MarkIcon from '../assets/MarkIcon.png';
 import { CustomPulseLoader } from './Loaders';
 
@@ -16,7 +15,7 @@ function Chatbot({ symbol }) {
     }
   ]);
   const [isMarkTyping, setIsMarkTyping] = useState(false);
-  const suggestedQueries = ["What is MarketChat?", `Give me a financial analysis on ${symbol}`]; // ocassionally, the ai won't know the stock ticker, so feed it the company's name along with the ticker to minimize ai not knowing of the stock
+  const suggestedQueries = ["What is MarketChat?", `What is the current market sentiment on ${symbol}?`, `Give me a financial analysis on ${symbol}`]; // ocassionally, the ai won't know the stock ticker, so feed it the company's name along with the ticker to minimize ai not knowing of the stock
   const [clickedIndices, setClickedIndices] = useState([]);
 
   const chatEndRef = useRef(null);
@@ -29,9 +28,12 @@ function Chatbot({ symbol }) {
       setIsMarkTyping(true);
       saveChatMessage('user', message);
 
-      const data = await sendMessageToApi(message);
+      const data = await sendMessageToApi(message, symbol);
       setMessages(messages => [...messages, { role: 'Mark', content: data.choices[0].message.content }]);
       saveChatMessage('Mark', data.choices[0].message.content);
+      console.log("Prompt Tokens:", data.usage.prompt_tokens);
+      console.log("Completion Tokens:", data.usage.completion_tokens);      
+      console.log("Total Tokens:", data.usage.total_tokens);
 
       setIsMarkTyping(false);
     } catch (err) {
@@ -56,7 +58,7 @@ function Chatbot({ symbol }) {
       return;
     }
     sendMessage(value);
-    setValue('');
+    setValue(''); // Empty input field
     textAreaRef.current.style.height = 'auto'; // Reset textarea height
   }
 
@@ -189,13 +191,6 @@ const MessageBubble = styled.div`
   white-space: pre-wrap;
 `;
 
-//const StyledUserIcon = styled.img`
-//  height: 1.5rem;
-//  margin-left: 0.7rem;
-//  border-radius: 50px;
-//  border: 4px solid ${props => props.theme.colors[50]};
-//`;
-
 const StyledMarkIcon = styled.img`
   height: 32px;
   margin-right: 0.7rem;
@@ -222,7 +217,7 @@ const SuggestedQuery = styled.div`
   color: ${props => props.theme.colors[500]};
   border: 1px solid ${props => props.theme.colors[500]};
   border-radius: 15px;
-  padding: 0.2rem 0.4rem;
+  padding: 0.2rem 0.5rem;
   margin-bottom: 0.6rem;
   align-self: flex-end;
 

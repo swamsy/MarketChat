@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
-require('./models/db');
+require('./db');
 
 const openaiRoutes = require('./routes/openai');
 const alphavantageRoutes = require('./routes/alphavantage');

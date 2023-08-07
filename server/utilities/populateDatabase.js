@@ -1,7 +1,7 @@
 const SearchResult = require('../models/SearchResult');
 
 async function getLogo(symbol) {
-    try{
+    try {
         const response = await fetch(`https://finnhub.io/api/v1/stock/profile2?symbol=${symbol}&token=${process.env.FINNHUB_API_KEY}`);
         const data = await response.json();
         return data.logo;
@@ -56,4 +56,7 @@ async function populateDatabase() {
     }
 };
 
-module.exports = populateDatabase;
+module.exports = {
+    populateDatabase,
+    getLogo
+};

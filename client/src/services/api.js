@@ -1,20 +1,14 @@
 // OpenAI
-export async function sendMessageToApi(message) {
+export async function sendMessageToApi(message, symbol) {
   const response = await fetch('http://localhost:5000/openai/gpt-3.5-turbo', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify({ message })
+    body: JSON.stringify({ message, symbol })
   });
   const data = await response.json() // wait for response from gpt-3.5
   return data
-}
-
-export async function getSentimentData(symbol) {
-  const response = await fetch(`http://localhost:5000/alphavantage/market-news-sentiment/${symbol}`);
-  const data = await response.json();
-  return data;
 }
 
 // Alpha Vantage

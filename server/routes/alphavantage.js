@@ -45,17 +45,4 @@ router.get('/historical/:symbol/:period/:interval', async (req, res) => {
   }
 });
 
-router.get('/market-news-sentiment/:symbol', async (req, res) => {
-  try {
-    const symbol = req.params.symbol;
-    const response = await fetch(`https://www.alphavantage.co/query?function=NEWS_SENTIMENT&tickers=${symbol}&apikey=${process.env.ALPHAVANTAGE_API_KEY}`);
-    const data = await response.json();
-    res.json(data);
-    console.log('Market news & sentiment data fetched');
-  } catch (err) {
-    console.error(err);
-    res.status(500).send('Error fetching market news & sentiment data');
-  }
-});
-
 module.exports = router;
