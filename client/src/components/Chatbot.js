@@ -209,7 +209,7 @@ const SendMessageSuggestedQueryContainer = styled.div`
   display: flex;
   flex-direction: column;
   padding: 0.875rem;
-  padding-top: 0;
+  padding-top: 0.3rem;
 
 `;
 
@@ -218,7 +218,7 @@ const SuggestedQuery = styled.div`
   border: 1px solid ${props => props.theme.colors[500]};
   border-radius: 15px;
   padding: 0.2rem 0.5rem;
-  margin-bottom: 0.6rem;
+  margin-bottom: 0.4rem;
   align-self: flex-end;
 
   p {

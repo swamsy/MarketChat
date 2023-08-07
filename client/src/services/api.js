@@ -1,6 +1,6 @@
 // OpenAI
 export async function sendMessageToApi(message, symbol) {
-  const response = await fetch('http://localhost:5000/openai/gpt-3.5-turbo', {
+  const response = await fetch(`${REACT_APP_API_URL}/openai/gpt-3.5-turbo`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
@@ -25,32 +25,32 @@ export async function getHistoricalData(symbol, timePeriod) {
     default:
   }
 
-  const response = await fetch(`http://localhost:5000/alphavantage/historical/${symbol}/${timePeriod}/${interval}`);
+  const response = await fetch(`${REACT_APP_API_URL}/alphavantage/historical/${symbol}/${timePeriod}/${interval}`);
   const data = await response.json();
   return data;
 }
 
 export async function getCompanyOverview(symbol) {
-  const response = await fetch(`http://localhost:5000/alphavantage/company-overview/${symbol}`);
+  const response = await fetch(`${REACT_APP_API_URL}/alphavantage/company-overview/${symbol}`);
   const data = await response.json();
   return data;
 }
 
 // MongoDB
 export async function searchSymbols(query) {
-  const response = await fetch(`http://localhost:5000/results/search?query=${query}`);
+  const response = await fetch(`${REACT_APP_API_URL}/results/search?query=${query}`);
   const data = await response.json();
   return data;
 }
 
 export async function getCompanyLogo(symbol) {
-  const response = await fetch(`http://localhost:5000/results/logo/${symbol}`);
+  const response = await fetch(`${REACT_APP_API_URL}/results/logo/${symbol}`);
   const data = await response.json();
   return data;
 }
 
 export async function saveChatMessage(role, content) {
-  const response = await fetch('http://localhost:5000/chats/save-message', {
+  const response = await fetch(`${REACT_APP_API_URL}/chats/save-message`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'

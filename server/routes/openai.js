@@ -40,6 +40,7 @@ router.post('/gpt-3.5-turbo', async (req, res) => {
         const response = await openai.createChatCompletion({
             model: "gpt-3.5-turbo",
             messages: messages,
+            max_tokens: 30,
         });
 
         res.json(response.data)
