@@ -4,9 +4,8 @@ import StockGraphPlaceholder from '../assets/StockGraphPlaceholder.svg';
 import { Line } from 'react-chartjs-2';
 import { getHistoricalData, getCompanyLogo } from '../services/api';
 import { Chart, CategoryScale, LineElement, PointElement, LinearScale } from 'chart.js';
-import { CrosshairPlugin } from 'chartjs-plugin-crosshair';
 import { calculateChange, calculatePercentChange, formatPriceChange, formatPercentChange, formatDate, formatDateRange, formatNumberWithCommas } from '../utilities/helperFunctions';
-Chart.register(CategoryScale, LineElement, PointElement, LinearScale, CrosshairPlugin);
+Chart.register(CategoryScale, LineElement, PointElement, LinearScale);
 
 function StockGraph({ symbol, companyName }) {
     const [companyLogo, setCompanyLogo] = useState(null);
@@ -174,18 +173,18 @@ function StockGraph({ symbol, companyName }) {
             tooltip: {
                 enabled: false
             },
-            crosshair: {
-                line: {
-                    color: '#14243d',
-                    width: 1
-                },
-                zoom: {
-                    enabled: false
-                },
-                snap: {
-                    enabled: true
-                }
-            }
+            //crosshair: {
+            //    line: {
+            //        color: '#14243d',
+            //        width: 1
+            //    },
+            //    zoom: {
+            //        enabled: false
+            //    },
+            //    snap: {
+            //        enabled: true
+            //    }
+            //}
         },
         onHover: (event, chartElement) => {
             if (chartElement[0]) {
