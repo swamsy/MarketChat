@@ -45,7 +45,7 @@ function SearchBar({ onSymbolSelected }) {
         onChange={handleChange}
         placeholder="Search by symbol or company name"
         onFocus={() => setInputFocused(true)}
-        onBlur={() => setInputFocused(true)}
+        onBlur={() => setInputFocused(false)}
       />
       <ResultsContainer
         onMouseEnter={() => setMouseOverResults(true)}
