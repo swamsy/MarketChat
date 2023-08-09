@@ -38,9 +38,13 @@ const StyledModal = styled(Modal)`
   outline: none;
   border-radius: 8px;
   padding: 20px 36px;
-  width: 500px;
+  width: 420px;
   max-width: 90%; 
   max-height: 90%; 
+
+  @media (max-width: 768px) {
+    padding: 10px 18px;
+  }
 `;
 
 const LearnModalHeader = styled.div`
@@ -79,6 +83,10 @@ const Definition = styled.div`
 
   p {
     line-height: 1.5;
+  }
+
+  @media (max-width: 768px) {
+    line-height: 1.2;
   }
 `;
 

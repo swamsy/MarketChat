@@ -26,7 +26,7 @@ function App() {
         <GlobalStyles/>
         <HeaderContainer>
           <LogoTitle>
-            <img src={MarketChatLogo} alt="MarketChat Logo" height='55px'/>
+            <img src={MarketChatLogo} alt="MarketChat Logo" />
             <h1>MarketChat</h1>
           </LogoTitle>
           <SearchBar onSymbolSelected={handleSymbolSelected}/>
@@ -46,9 +46,10 @@ function App() {
 
 const BodyWrapper = styled.div`
   padding: 4rem;
+  overflow: auto;
 
   @media (max-width: 768px) {
-    padding: 2rem;
+    padding: 1.2rem;
   }
 `;
 
@@ -71,11 +72,19 @@ const LogoTitle = styled.div`
   align-items: center;
   gap: 1rem;
 
+  img {
+    height: 55px;
+  }
+
   @media (max-width: 768px) {
     gap: 0.5rem;
 
     h1 {
       display: none;
+    }
+
+    img {
+      height: 45px;
     }
     
   }
@@ -92,7 +101,7 @@ const HeroContainer = styled.div`
   }
 
   @media (max-width: 768px) {
-    grid-template-columns: 1fr;
+    grid-template-columns: 100%;
     grid-template-rows: auto auto;
   }
 `;

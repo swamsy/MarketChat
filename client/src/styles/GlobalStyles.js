@@ -87,7 +87,7 @@ const GlobalStyles = createGlobalStyle`
         h4 { font-size: 20px; }
         h5 { font-size: 16px; }
         h6 { font-size: 14px; }
-        p, a, textarea { font-size: 12px; }
+        p, a, textarea { font-size: 14px; }
     }
 `;
 

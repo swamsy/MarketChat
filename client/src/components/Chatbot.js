@@ -155,6 +155,7 @@ const ChatArea = styled.div`
   display: flex;
   flex-direction: column;
   overflow-y: auto;
+  overflow-x: hidden;
   flex: 1;
   padding: 0.875rem;
 
@@ -182,6 +183,10 @@ const Message = styled.div`
   p {
     color: ${props => props.className === "user" ? props.theme.colors[100] : props.theme.colors[950]};
   }
+
+  @media (max-width: 768px) {
+    max-width: 100%;
+  }
 `;
 
 const MessageBubble = styled.div`
@@ -189,6 +194,8 @@ const MessageBubble = styled.div`
   background-color: ${props => props.className === "user" ? props.theme.colors[500] : props.theme.colors[50]};
   border-radius: ${props => props.className === "user" ? '1rem 0rem 1rem 1rem' : '0rem 1rem 1rem 1rem'};
   white-space: pre-wrap;
+  word-wrap: break-word;
+  overflow-x: auto;
 `;
 
 const StyledMarkIcon = styled.img`
@@ -220,6 +227,7 @@ const SuggestedQuery = styled.div`
   padding: 0.2rem 0.5rem;
   margin-bottom: 0.4rem;
   align-self: flex-end;
+  max-width: 90%;
 
   p {
     color: ${props => props.theme.colors[500]};

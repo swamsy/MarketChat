@@ -45,7 +45,7 @@ function SearchBar({ onSymbolSelected }) {
         onChange={handleChange}
         placeholder="Search by symbol or company name"
         onFocus={() => setInputFocused(true)}
-        onBlur={() => setInputFocused(false)}
+        onBlur={() => setInputFocused(true)}
       />
       <ResultsContainer
         onMouseEnter={() => setMouseOverResults(true)}
@@ -88,8 +88,8 @@ const SearchBarContainer = styled.div`
   min-width: 290px;
 
   @media (max-width: 768px) {
-   gap: 0.2rem;
-   min-width: 250px;
+   max-width: 200px;
+   min-width: 200px;
   }
 `;
 
@@ -103,7 +103,6 @@ const SearchInput = styled.input`
   @media (max-width: 768px) {
     font-size: 12px;
   }
-
 `;
 
 const ResultsContainer = styled.div`
@@ -132,6 +131,15 @@ const ResultItem = styled.div`
     object-fit: contain;
     border-radius: 6px;
   }
+
+  @media (max-width: 768px) {
+    padding: 0.5rem;
+    img {
+      height: 45px;
+      width: 45px;
+    }
+    
+  }
 `;
 
 const PlaceholderLogo = styled.div`
@@ -142,6 +150,11 @@ const PlaceholderLogo = styled.div`
   min-width: 55px;
   min-height: 55px;
   border-radius: 6px;
+
+  @media (max-width: 768px) {
+    min-width: 45px;
+    min-height: 45px;
+  }
 `;
 
 const PlaceholderLogoText = styled.div`

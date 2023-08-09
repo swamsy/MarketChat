@@ -51,6 +51,12 @@ const KeyDataHeader = styled.div`
   h4 {
     color: ${props => props.theme.colors[500]};
   }
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.5rem;
+  }
 `;
 
 const LearnAboutKeyData = styled.h3`

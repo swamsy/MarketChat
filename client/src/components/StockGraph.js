@@ -147,6 +147,59 @@ function StockGraph({ symbol, companyName }) {
             });
     }, [symbol, timePeriod]);
 
+    // hoverCrosshair plugin block
+    let crosshair;
+    const hoverCrosshair = {
+        id: 'hoverCrosshair',
+        events: ['mousemove'],
+
+        beforeDatasetsDraw(chart) {
+            if(crosshair) {
+                const { ctx } = chart;
+                ctx.save();
+
+                crosshair.forEach((line) => {
+                    ctx.beginPath();
+                    ctx.lineWidth = 1;
+                    ctx.strokeStyle = '#5c95d4';
+                    ctx.moveTo(line.startX, line.startY);
+                    ctx.lineTo(line.endX, line.endY);
+                    ctx.stroke();
+                })
+                ctx.restore();
+            }
+        },
+
+
+        afterEvent(chart, args) {
+            const { chartArea: {top, bottom}, scales } = chart;
+
+            if(!args.inChartArea && crosshair) {
+                crosshair = null;
+                args.changed = true;
+            } else if (args.inChartArea) {
+
+                const elementsAtEvent = chart.getElementsAtEventForMode(args.event, 'index', { intersect: false }, true);
+                const index = elementsAtEvent[0]?.index;
+
+                if (index !== undefined) {
+                    // Use the x-coordinate of the data point for the crosshair
+                    const xCoor = scales.x.getPixelForValue(index);
+
+                    crosshair = [ 
+                        {
+                            startX: xCoor,
+                            startY: top,
+                            endX: xCoor,
+                            endY: bottom
+                        }
+                    ];
+                    args.changed = true;
+                }
+            }
+        }
+    }
+
     // Chart appearance options
     const options = {
         maintainAspectRatio: false,
@@ -172,19 +225,7 @@ function StockGraph({ symbol, companyName }) {
             },
             tooltip: {
                 enabled: false
-            },
-            //crosshair: {
-            //    line: {
-            //        color: '#14243d',
-            //        width: 1
-            //    },
-            //    zoom: {
-            //        enabled: false
-            //    },
-            //    snap: {
-            //        enabled: true
-            //    }
-            //}
+            }
         },
         onHover: (event, chartElement) => {
             if (chartElement[0]) {
@@ -223,7 +264,7 @@ function StockGraph({ symbol, companyName }) {
             <Change color={hasData ? formatPriceChange(hoveredChange).color : 600}>
                 {isDataLoading ? <DataPlaceholder width='180px' height='28px' /> : hasData ? `${formatNumberWithCommas(formatPriceChange(hoveredChange).value)} (${formatNumberWithCommas(formatPercentChange(hoveredPercentChange).value)})` : '$--.-- (--.--%)'}
             </Change>
-            {isDataLoading ? <DataPlaceholder width='170px' height='24px' /> : hasData ? <p>{hoveredDate}</p> : <p>-- / -- / ----</p>}
+            {isDataLoading ? <DataPlaceholder width='170px' height='24px' /> : hasData ? <StyledDateRange>{hoveredDate}</StyledDateRange> : <StyledDateRange>-- / -- / ----</StyledDateRange>}
             <StockGraphChart
                 onMouseLeave={() => {
                     if (!hasData) return;
@@ -236,9 +277,9 @@ function StockGraph({ symbol, companyName }) {
                 {isDataLoading ? (
                     <StyledStockGraphPlaceholder src={StockGraphPlaceholder} alt="Stock Graph Placeholder" />
                 ) : hasData ? (
-                    <Line data={chartData} options={options} />
+                    <Line data={chartData} options={options} plugins={[hoverCrosshair]} />
                 ) : (
-                    <p style={{ textAlign: 'center', paddingTop: '180px' }}>No data available</p>
+                    <p>No data available</p>
                 )}
             </StockGraphChart>
             <TimePeriodsContainer>
@@ -248,7 +289,7 @@ function StockGraph({ symbol, companyName }) {
                         onClick={() => setTimePeriod(period)}
                         $isActive={period === timePeriod} // transient prop
                     >
-                        {period}
+                        <TimePeriodText>{period}</TimePeriodText>
                     </TimePeriod>
                 ))}
             </TimePeriodsContainer>
@@ -259,18 +300,11 @@ function StockGraph({ symbol, companyName }) {
 const StockGraphContainer = styled.div`
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
     padding: 1rem;
     //box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.25);
     box-shadow: rgba(0, 0, 0, 0.15) 0px 3px 15px;
     border-radius: 8px;
     height: 68vh;
-    
-    p {
-        margin: 0.2rem 0; 
-        font-size: 14px;
-        color: ${props => props.theme.colors[500]};
-    }
 `;
 
 const NameandLogo = styled.div`
@@ -326,7 +360,16 @@ const Change = styled.h4`
     color: ${props => props.theme.colors[props.color]};
 `;
 
+const StyledDateRange = styled.p`
+    margin: 0.2rem 0; 
+    font-size: 14px;
+    color: ${props => props.theme.colors[500]};
+`;
+
 const StockGraphChart = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
     height: 100%;
     width: 100%;
     border-top: 1px solid ${props => props.theme.colors[100]};
@@ -361,13 +404,30 @@ const TimePeriod = styled.div`
     margin-right: 0.5rem;
     border: 1px solid ${props => props.theme.colors[500]};
     border-radius: 10px;
-    padding: 0.5rem;
+    padding: 0.4rem 0.5rem;
 
     &:hover {
         background-color: ${props => props.theme.colors[50]};
         cursor: pointer;
     }
+
+    @media (max-width: 768px) {
+        margin-right: 0.4rem;
+        padding: 0.25rem 0.4rem;
+    }
+
+    @media (max-width: 350px) {
+        margin-right: 0.3rem;
+        padding: 0.25rem 0.3rem;
+    }
 `;
 
+const TimePeriodText = styled.p`
+    color: ${props => props.theme.colors[500]};
+
+    @media (max-width: 768px) {
+        font-size: 14px;
+    }
+`;
 
 export default StockGraph;
