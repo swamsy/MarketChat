@@ -25,7 +25,7 @@ const GlobalStyles = createGlobalStyle`
 
     h1 {
         font-weight: 600;
-        font-size: 40px;
+        font-size: 44px;
     }
 
     h2 {

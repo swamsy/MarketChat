@@ -9,7 +9,7 @@ import styled from 'styled-components';
 import GlobalStyles from './styles/GlobalStyles';
 import { ThemeProvider } from 'styled-components';
 import theme from './styles/Theme';
-import MarketChatLogo from './assets/MarketChatLogo.svg';
+import MarketChatLogo from './assets/MarketChatLogo.png';
 
 function App() {
   const [symbol, setSymbol] = useState('AAPL');
@@ -70,23 +70,16 @@ const HeaderContainer = styled.div`
 const LogoTitle = styled.div`
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 0.5rem;
 
   img {
-    height: 55px;
+    height: 45px;
   }
 
   @media (max-width: 768px) {
-    gap: 0.5rem;
-
     h1 {
       display: none;
     }
-
-    img {
-      height: 45px;
-    }
-    
   }
 
 `;

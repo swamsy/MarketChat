@@ -244,6 +244,14 @@ function StockGraph({ symbol, companyName }) {
         },
     };
 
+    const handleGraphExit = () => {
+        if (!hasData) return;
+        setHoveredPrice(currentPrice.toFixed(2));
+        setHoveredChange(change.toFixed(2));
+        setHoveredPercentChange(percentChange.toFixed(2));
+        setHoveredDate(formatDateRange(chartData.labels[0], chartData.labels[chartData.labels.length - 1], timePeriod));
+    }
+
     return (
         <StockGraphContainer>
             <NameandLogo>
@@ -266,13 +274,8 @@ function StockGraph({ symbol, companyName }) {
             </Change>
             {isDataLoading ? <DataPlaceholder width='170px' height='24px' /> : hasData ? <StyledDateRange>{hoveredDate}</StyledDateRange> : <StyledDateRange>-- / -- / ----</StyledDateRange>}
             <StockGraphChart
-                onMouseLeave={() => {
-                    if (!hasData) return;
-                    setHoveredPrice(currentPrice.toFixed(2));
-                    setHoveredChange(change.toFixed(2));
-                    setHoveredPercentChange(percentChange.toFixed(2));
-                    setHoveredDate(formatDateRange(chartData.labels[0], chartData.labels[chartData.labels.length - 1], timePeriod));
-                }}
+                onMouseLeave={() => handleGraphExit()}
+                onTouchEnd={() => handleGraphExit()}
             >
                 {isDataLoading ? (
                     <StyledStockGraphPlaceholder src={StockGraphPlaceholder} alt="Stock Graph Placeholder" />
@@ -311,6 +314,12 @@ const NameandLogo = styled.div`
     display: flex;
     align-items: center;
     gap: 0.5rem;
+
+    h3 {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
 `;
 
 const StyledLogo = styled.img`

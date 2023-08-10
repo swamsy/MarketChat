@@ -9,6 +9,7 @@ function SearchBar({ onSymbolSelected }) {
   const [results, setResults] = useState([]);
   const [isInputFocused, setInputFocused] = useState(false);
   const [isMouseOverResults, setMouseOverResults] = useState(false);
+  const [placeholderText, setPlaceholderText] = useState('');
 
   async function search(query) {
     try {
@@ -27,6 +28,24 @@ function SearchBar({ onSymbolSelected }) {
     }
   }, [input]);
 
+  // Adjust placeholder text based on screen size
+  useEffect(() => {
+    const adjustPlaceholder = () => {
+        if (window.innerWidth <= 768) {
+            setPlaceholderText('Search');
+        } else {
+            setPlaceholderText('Search by symbol or company name');
+        }
+    };
+    adjustPlaceholder();
+    window.addEventListener('resize', adjustPlaceholder);
+
+    return () => {
+        window.removeEventListener('resize', adjustPlaceholder);
+    };
+}, []);
+
+
   const handleChange = (event) => {
     setInput(event.target.value);
   };
@@ -38,12 +57,12 @@ function SearchBar({ onSymbolSelected }) {
 
   return (
     <SearchBarContainer $isInputFocused={isInputFocused}> {/* transient prop */}
-      <img src={SearchIcon} alt="Search Logo" height='15' />
+      <img src={SearchIcon} alt="Search Logo" height='15px' />
       <SearchInput
         type="text"
         value={input}
         onChange={handleChange}
-        placeholder="Search by symbol or company name"
+        placeholder={placeholderText}
         onFocus={() => setInputFocused(true)}
         onBlur={() => setInputFocused(false)}
       />
@@ -81,7 +100,7 @@ const SearchBarContainer = styled.div`
   display: flex;
   align-items: center;
   padding: 0.6rem;
-  gap: 0.5rem;
+  gap: 0.3rem;
   border-radius: 8px;
   border: ${props => props.$isInputFocused ? `1px solid ${props.theme.colors[400]}` : `1px solid ${props.theme.colors[100]}`};  
   max-width: 290px;

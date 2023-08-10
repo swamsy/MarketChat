@@ -1,6 +1,10 @@
 {
     "scripts": {
       "postinstall": "cd server && npm install"
+    },
+    "engines": {
+        "node": "18.x",
+        "npm": "9.5.1"
     }
-  }
+}
   
