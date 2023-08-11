@@ -42,19 +42,22 @@ function Chatbot({ symbol }) {
     }
   }
 
-  useEffect(() => { // scroll to bottom of chat when new message is added
+  // Scroll to bottom of chat when new message is added
+  useEffect(() => { 
     if (chatEndRef.current) {
       chatEndRef.current.scrollTop = chatEndRef.current.scrollHeight;
     }
   }, [messages]);
 
+  // Prevent "What is MarketChat?" suggested query from showing up again if it's already been clicked when user goes to different stock symbol
   useEffect(() => {
     setClickedIndices(indices => indices.filter(index => index !== 1));
   }, [symbol]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (value.trim() === '') { // don't allow user to send empty message
+    // Don't allow user to send empty message & don't allow user to send message if Mark is typing
+    if (value.trim() === '' || isMarkTyping) {
       return;
     }
     sendMessage(value);
@@ -62,6 +65,7 @@ function Chatbot({ symbol }) {
     textAreaRef.current.style.height = 'auto'; // Reset textarea height
   }
 
+  // User can send message with Enter key and can go to new line in textarea with Shift + Enter
   const handleKeyDown = (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
@@ -69,6 +73,7 @@ function Chatbot({ symbol }) {
     }
   };
 
+  // Dynamically resize textarea & set current user inputted message to state
   const handleTextAreaChange = (e) => {
     setValue(e.target.value);
     textAreaRef.current.style.height = 'auto';  // Reset textarea height
@@ -100,7 +105,7 @@ function Chatbot({ symbol }) {
             return null;
           }
           return (
-            <SuggestedQuery key={index} onClick={() => {
+            <SuggestedQuery key={index} disabled={isMarkTyping} onClick={() => {
               sendMessage(query);
               setClickedIndices(indices => [...indices, index]);
             }}>
@@ -120,7 +125,7 @@ function Chatbot({ symbol }) {
             onBlur={() => setInputFocused(false)}
             rows="1"
           />
-          <SendBox type="submit">
+          <SendBox type="submit" disabled={isMarkTyping}>
             <img src={SendIcon} alt="Send Icon" />
           </SendBox>
         </SendMessageContainer>
@@ -223,11 +228,14 @@ const SendMessageSuggestedQueryContainer = styled.div`
 const SuggestedQuery = styled.div`
   color: ${props => props.theme.colors[500]};
   border: 1px solid ${props => props.theme.colors[500]};
-  border-radius: 15px;
+  border-radius: 18px;
   padding: 0.2rem 0.5rem;
   margin-bottom: 0.4rem;
-  align-self: flex-end;
   max-width: 90%;
+  align-self: flex-end;
+
+  opacity: ${props => props.disabled ? 0.5 : 1};
+  pointer-events: ${props => props.disabled ? 'none' : 'auto'};
 
   p {
     color: ${props => props.theme.colors[500]};
@@ -291,17 +299,12 @@ const SendBox = styled.button`
   right: 10px;
   bottom: 6px;
 
+  opacity: ${props => props.disabled ? 0.5 : 1};
+  pointer-events: ${props => props.disabled ? 'none' : 'auto'};
+
   @media (max-width: 768px) {
     padding: 7px;
   }
-  
-  //&:hover {
-  //  background-color: ${props => props.theme.colors[600]};
-  //}
-  
-  //&:active {
-  //  background-color: ${props => props.theme.colors[700]};
-  //}
 
 `;
 

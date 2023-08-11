@@ -4,8 +4,8 @@ const SearchResult = require('../models/SearchResult');
 
 router.get('/search', async (req, res) => {
     try {
+        //console.log("Server req:", req);
         const query = req.query.query;
-
         // Check if the query is empty or whitespace only
         if (!query || /^\s*$/.test(query)) {
             return res.json([]);

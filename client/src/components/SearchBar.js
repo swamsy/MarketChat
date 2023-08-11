@@ -14,13 +14,16 @@ function SearchBar({ onSymbolSelected }) {
   async function search(query) {
     try {
       const matches = await searchSymbols(query);
+      //console.log("Matches:",matches);
       setResults(matches);
+      //await console.log("Results:",results);
     } catch (err) {
       console.error(err);
     }
   };
 
   useEffect(() => {
+    //console.log("Input:",input);
     if (input) {
       search(input);
     } else {
@@ -107,8 +110,9 @@ const SearchBarContainer = styled.div`
   min-width: 290px;
 
   @media (max-width: 768px) {
-   max-width: 200px;
-   min-width: 200px;
+    gap: 0.2rem;
+    max-width: 200px;
+    min-width: 200px;
   }
 `;
 

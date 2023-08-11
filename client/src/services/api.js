@@ -38,8 +38,11 @@ export async function getCompanyOverview(symbol) {
 
 // MongoDB
 export async function searchSymbols(query) {
+  //console.log("Search Symbols api.js", query);
   const response = await fetch(`${process.env.REACT_APP_API_URL}/results/search?query=${query}`);
+  //console.log("Response:", response)
   const data = await response.json();
+  //console.log("Data:", data)
   return data;
 }
 
