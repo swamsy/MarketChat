@@ -9,7 +9,7 @@ import styled from 'styled-components';
 import GlobalStyles from './styles/GlobalStyles';
 import { ThemeProvider } from 'styled-components';
 import theme from './styles/Theme';
-import MarketChatLogo from './assets/MarketChatLogo.png';
+import MarketChatLogo from './assets/MarketChatLogo.svg';
 
 function App() {
   const [symbol, setSymbol] = useState('AAPL');

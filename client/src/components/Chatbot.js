@@ -51,7 +51,7 @@ function Chatbot({ symbol }) {
 
   // Prevent "What is MarketChat?" suggested query from showing up again if it's already been clicked when user goes to different stock symbol
   useEffect(() => {
-    setClickedIndices(indices => indices.filter(index => index !== 1));
+    setClickedIndices(indices => indices.filter(index => index !== 1 && index !== 2));
   }, [symbol]);
 
   const handleSubmit = (e) => {

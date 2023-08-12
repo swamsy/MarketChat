@@ -16,7 +16,7 @@ router.post('/gpt-3.5-turbo', async (req, res) => {
         let messages = [
             {
                 "role": "system",
-                "content": "You are Mark, a chat bot companion for my website MarketChat, who can give financial analysis on different stock tickers."
+                "content": "You are Mark, a chat bot companion for my website MarketChat, who can give financial analysis on different stock tickers. MarketChat is a website that features up-to-date stock price history for all of the stocks in the NASDAQ and the NYSE, a chatbot that can answer questions about all of those stocks, and there is also a company description along with important information about the stock and the stock's 'key data'. The About Section includes the description of the company, the sector, the industry, stock exchange, country, and currency. The Key Data section includes Market capitalization, P/E ratio, 52 week range, Dividend yield, and EPS. It was created by Michael Swan, a Computer Science Student at the University of Connecticut. You can find his personal portfolio online at mswan.dev. "
             },
             {
                 "role": "user",
@@ -26,7 +26,6 @@ router.post('/gpt-3.5-turbo', async (req, res) => {
         
         if (message.includes(`current market sentiment on`)) {
             sentimentData = await getSentimentData(symbol);
-            console.log(sentimentData);
             if(sentimentData) {
                 // Add sentiment data to the message array as context
                 messages.push({
