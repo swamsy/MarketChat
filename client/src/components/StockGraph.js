@@ -151,7 +151,7 @@ function StockGraph({ symbol, companyName }) {
     let crosshair;
     const hoverCrosshair = {
         id: 'hoverCrosshair',
-        events: ['mousemove'],
+        events: ['mousemove', 'touchmove', 'touchend'],
 
         beforeDatasetsDraw(chart) {
             if(crosshair) {
@@ -174,7 +174,10 @@ function StockGraph({ symbol, companyName }) {
         afterEvent(chart, args) {
             const { chartArea: {top, bottom}, scales } = chart;
 
-            if(!args.inChartArea && crosshair) {
+            console.log(args);
+            console.log(args.event.type);
+            if((!args.inChartArea || args.event.type === 'touchend') && crosshair) {
+                console.log('crosshair null triggered');
                 crosshair = null;
                 args.changed = true;
             } else if (args.inChartArea) {
@@ -229,6 +232,7 @@ function StockGraph({ symbol, companyName }) {
         },
         onHover: (event, chartElement) => {
             if (chartElement[0]) {
+                console.log('sike');
                 const price = Number(chartData.datasets[0].data[chartElement[0].index]);
                 setHoveredPrice(price.toFixed(2));
 
@@ -245,11 +249,13 @@ function StockGraph({ symbol, companyName }) {
     };
 
     const handleGraphExit = () => {
+        console.log('Graph Exit');
         if (!hasData) return;
         setHoveredPrice(currentPrice.toFixed(2));
         setHoveredChange(change.toFixed(2));
         setHoveredPercentChange(percentChange.toFixed(2));
         setHoveredDate(formatDateRange(chartData.labels[0], chartData.labels[chartData.labels.length - 1], timePeriod));
+        console.log('Graph Exit things set');
     }
 
     return (

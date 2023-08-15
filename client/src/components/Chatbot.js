@@ -231,13 +231,14 @@ const SuggestedQuery = styled.div`
   border-radius: 18px;
   padding: 0.2rem 0.5rem;
   margin-bottom: 0.4rem;
-  max-width: 90%;
+  max-width: 95%;
   align-self: flex-end;
 
   opacity: ${props => props.disabled ? 0.5 : 1};
   pointer-events: ${props => props.disabled ? 'none' : 'auto'};
 
   p {
+    display: inline;
     color: ${props => props.theme.colors[500]};
   }
 
@@ -297,7 +298,7 @@ const SendBox = styled.button`
   border-radius: 6px;
   position: absolute;
   right: 10px;
-  bottom: 6px;
+  bottom: 7px;
 
   opacity: ${props => props.disabled ? 0.5 : 1};
   pointer-events: ${props => props.disabled ? 'none' : 'auto'};

@@ -10,7 +10,7 @@ const GlobalStyles = createGlobalStyle`
         box-sizing: border-box;
     }
     
-    body {
+    html, body {
         background-color: ${(props) => props.theme.colors.backgroundColor};
         font-family: var(--main-font-family);
         margin: 0;
