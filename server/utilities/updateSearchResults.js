@@ -4,14 +4,14 @@ async function getLogo(symbol) {
     try {
         const response = await fetch(`https://finnhub.io/api/v1/stock/profile2?symbol=${symbol}&token=${process.env.FINNHUB_API_KEY}`);
         const data = await response.json();
-        return data.logo;
+        return data.logo || "";
     } catch (err) {
         console.error(err);
-        return null;
+        return "";
     }   
 };
 
-async function populateDatabase() {
+async function updateSearchResults() {
     try {
         const urls = [
             'https://api.twelvedata.com/stocks?exchange=NASDAQ&type=Common%20Stock',
@@ -24,11 +24,12 @@ async function populateDatabase() {
         const existingSymbols = await SearchResult.find({}).select('symbol');
         const existingSymbolSet = new Set(existingSymbols.map(item => item.symbol));
 
-        console.log('Starting to populate DB');
+        console.log('Starting to update DB');
         let count = 0;
         for (const data of datas) {
             for (const item of data.data) {
                 if (!existingSymbolSet.has(item.symbol)) { // If the symbol doesn't exist in the database, add it
+                    console.log(`Adding ${item.symbol} to the database`);
                     const logoUrl = await getLogo(item.symbol); // Retrieve logo URL
                     count++;
                     if (count % 60 === 0) {
@@ -47,16 +48,17 @@ async function populateDatabase() {
         }
         // Delete symbols from database that are no longer in the API
         for (const symbol of existingSymbolSet) {
+            console.log(`Deleting ${symbol} from the database`);
             await SearchResult.deleteOne({ symbol });
         }
 
-        console.log('Successfully populated the database');
+        console.log('Successfully updated the database');
     } catch (err) {
         console.error(err);
     }
 };
 
 module.exports = {
-    populateDatabase,
+    updateSearchResults,
     getLogo
 };

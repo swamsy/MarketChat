@@ -151,7 +151,7 @@ function StockGraph({ symbol, companyName }) {
     let crosshair;
     const hoverCrosshair = {
         id: 'hoverCrosshair',
-        events: ['mousemove', 'touchmove', 'touchend'],
+        events: ['mousemove'],
 
         beforeDatasetsDraw(chart) {
             if(crosshair) {
@@ -174,10 +174,7 @@ function StockGraph({ symbol, companyName }) {
         afterEvent(chart, args) {
             const { chartArea: {top, bottom}, scales } = chart;
 
-            console.log(args);
-            console.log(args.event.type);
-            if((!args.inChartArea || args.event.type === 'touchend') && crosshair) {
-                console.log('crosshair null triggered');
+            if(!args.inChartArea && crosshair) {
                 crosshair = null;
                 args.changed = true;
             } else if (args.inChartArea) {
@@ -232,7 +229,6 @@ function StockGraph({ symbol, companyName }) {
         },
         onHover: (event, chartElement) => {
             if (chartElement[0]) {
-                console.log('sike');
                 const price = Number(chartData.datasets[0].data[chartElement[0].index]);
                 setHoveredPrice(price.toFixed(2));
 
@@ -249,13 +245,11 @@ function StockGraph({ symbol, companyName }) {
     };
 
     const handleGraphExit = () => {
-        console.log('Graph Exit');
         if (!hasData) return;
         setHoveredPrice(currentPrice.toFixed(2));
         setHoveredChange(change.toFixed(2));
         setHoveredPercentChange(percentChange.toFixed(2));
         setHoveredDate(formatDateRange(chartData.labels[0], chartData.labels[chartData.labels.length - 1], timePeriod));
-        console.log('Graph Exit things set');
     }
 
     return (
@@ -279,10 +273,7 @@ function StockGraph({ symbol, companyName }) {
                 {isDataLoading ? <DataPlaceholder width='180px' height='28px' /> : hasData ? `${formatNumberWithCommas(formatPriceChange(hoveredChange).value)} (${formatNumberWithCommas(formatPercentChange(hoveredPercentChange).value)})` : '$--.-- (--.--%)'}
             </Change>
             {isDataLoading ? <DataPlaceholder width='170px' height='24px' /> : hasData ? <StyledDateRange>{hoveredDate}</StyledDateRange> : <StyledDateRange>-- / -- / ----</StyledDateRange>}
-            <StockGraphChart
-                onMouseLeave={() => handleGraphExit()}
-                onTouchEnd={() => handleGraphExit()}
-            >
+            <StockGraphChart onMouseLeave={() => handleGraphExit()}>
                 {isDataLoading ? (
                     <StyledStockGraphPlaceholder src={StockGraphPlaceholder} alt="Stock Graph Placeholder" />
                 ) : hasData ? (

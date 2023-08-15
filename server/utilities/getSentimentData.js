@@ -17,7 +17,6 @@ async function getSentimentData(symbol) {
             })
         };
         return extractedData;
-        console.log(extractedData);
 
     } catch (err) {
         console.error(err);

@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
 require('./db');
+require('./scripts/cronSearchResults')
 
 const openaiRoutes = require('./routes/openai');
 const alphavantageRoutes = require('./routes/alphavantage');
