@@ -60,6 +60,8 @@ export async function saveChatMessage(role, content) {
     },
     body: JSON.stringify({ role, content })
   });
-  const data = await response.json();
-  return data;
+ 
+  if (!response.ok) {
+    console.error(`Error saving chat message: ${response.statusText}`);
+  }
 }

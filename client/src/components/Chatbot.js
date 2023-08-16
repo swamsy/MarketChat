@@ -298,13 +298,14 @@ const SendBox = styled.button`
   border-radius: 6px;
   position: absolute;
   right: 10px;
-  bottom: 7px;
+  bottom: 6px;
 
   opacity: ${props => props.disabled ? 0.5 : 1};
   pointer-events: ${props => props.disabled ? 'none' : 'auto'};
 
   @media (max-width: 768px) {
     padding: 7px;
+    bottom: 7px;
   }
 
 `;
