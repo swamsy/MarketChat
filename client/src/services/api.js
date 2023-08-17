@@ -1,14 +1,28 @@
 // OpenAI
-export async function sendMessageToApi(message, symbol) {
-  const response = await fetch(`${process.env.REACT_APP_API_URL}/openai/gpt-3.5-turbo`, {
+export async function sendMessagetoApi(message, symbol) {
+  const response = await fetch(`${process.env.REACT_APP_API_URL}/openai/gpt-3.5-turbo/send`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({ message, symbol })
   });
-  const data = await response.json() // wait for response from gpt-3.5
-  return data
+
+  if (!response.ok) {
+    console.error(`Error sending chat message to api: ${response.statusText}`);
+  }
+}
+
+export async function createMessageStream() {
+  // Create an EventSource that connects to server endpoint
+  const eventSource = new EventSource(`${process.env.REACT_APP_API_URL}/openai/gpt-3.5-turbo/stream`); 
+  
+  eventSource.onerror = (error) => {
+    console.error("EventSource failed:", error);
+    eventSource.close();
+  };
+  
+  return eventSource;
 }
 
 // Alpha Vantage

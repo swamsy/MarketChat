@@ -3,7 +3,6 @@ import { createGlobalStyle } from 'styled-components';
 const GlobalStyles = createGlobalStyle`
     :root {
         --main-font-family: 'Inter', sans-serif;
-
     }
 
     *, *:before, *:after {

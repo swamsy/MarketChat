@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
-import { sendMessageToApi, saveChatMessage } from '../services/api'
+import { createMessageStream, saveChatMessage, sendMessagetoApi } from '../services/api'
 
 import styled from 'styled-components'
 import SendIcon from '../assets/SendIcon.svg';
@@ -14,6 +14,7 @@ function Chatbot({ symbol }) {
       content: "Hey there! I’m Mark, MarketChat’s AI chat bot. What’s up?"
     }
   ]);
+  const [streamingMessage, setStreamingMessage] = useState("");
   const [isMarkTyping, setIsMarkTyping] = useState(false);
   const suggestedQueries = ["What is MarketChat?", `What is the current market sentiment on ${symbol}?`, `Give me a financial analysis on ${symbol}`]; // ocassionally, the ai won't know the stock ticker, so feed it the company's name along with the ticker to minimize ai not knowing of the stock
   const [clickedIndices, setClickedIndices] = useState([]);
@@ -27,15 +28,43 @@ function Chatbot({ symbol }) {
       setMessages(messages => [...messages, { role: 'user', content: message }]);
       setIsMarkTyping(true);
       saveChatMessage('user', message);
+      await sendMessagetoApi(message, symbol);
+  
+      const eventSource = await createMessageStream();
+      console.log("Created message stream in chatbot.js");
+    
 
-      const data = await sendMessageToApi(message, symbol);
-      setMessages(messages => [...messages, { role: 'Mark', content: data.choices[0].message.content }]);
-      saveChatMessage('Mark', data.choices[0].message.content);
-      console.log("Prompt Tokens:", data.usage.prompt_tokens);
-      console.log("Completion Tokens:", data.usage.completion_tokens);      
-      console.log("Total Tokens:", data.usage.total_tokens);
+      eventSource.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+        console.log(JSON.parse(event.data))
+        if (data.delta.content) { // Only update if there's content
+          console.log("appending streaming message to state"); 
+          setStreamingMessage(prevMessage => prevMessage + data.delta.content);
+        }
+        
+        if (data.finish_reason === "stop") {
+          console.log("Streaming Message", streamingMessage)
+          console.log("Messages:", messages)      
+          setIsMarkTyping(false);
+          setMessages(messages => [...messages, { role: 'Mark', content: streamingMessage }]);
+          console.log("Saving this to mongoDB:", streamingMessage)
+          saveChatMessage('Mark', streamingMessage);
+          setStreamingMessage(""); // reset streamingMessage
+          eventSource.close(); // Close the connection when the AI is done responding
+        }
+      };
 
-      setIsMarkTyping(false);
+      
+      //console.log("Prompt Tokens:", data.usage.prompt_tokens);
+      //console.log("Completion Tokens:", data.usage.completion_tokens);      
+      //console.log("Total Tokens:", data.usage.total_tokens);
+
+      eventSource.onerror = (err) => {
+        console.error("EventSource failed:", err);
+        setIsMarkTyping(false);
+        eventSource.close();
+      };
+
     } catch (err) {
       console.error(err);
       setIsMarkTyping(false);
@@ -94,6 +123,14 @@ function Chatbot({ symbol }) {
             </MessageBubble>
           </Message>
         ))}
+      {isMarkTyping && 
+        <Message className='Mark'>
+          <StyledMarkIcon src={MarkIcon} alt="Mark Icon" />
+          <MessageBubble className='Mark'>
+            <p>{streamingMessage}</p>
+          </MessageBubble>
+        </Message>
+      }
       <MarkTyping>
         {isMarkTyping && <h6>Mark is typing</h6>}
         {isMarkTyping && <CustomPulseLoader />}

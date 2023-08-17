@@ -1,5 +1,5 @@
 import InfoSection from './InfoSection';
-import { capitalizeWords } from '../utilities/helperFunctions';
+import { capitalizeWords, formatDate } from '../utilities/helperFunctions';
 import { CustomBeatLoader } from './Loaders';
 import styled from 'styled-components'
 
@@ -15,7 +15,7 @@ function About({ companyData, isLoading }) {
             ["Industry", companyData ? capitalizeWords(companyData.Industry) : "—"],
             ["Exchange", companyData ? companyData.Exchange : "—"],
             ["Country", companyData ? companyData.Country : "—"],
-            ["Currency", companyData ? companyData.Currency : "—"],
+            ["Dividend Date", companyData ? formatDate(companyData.DividendDate) : "—"],
           ]}
           isLoading={isLoading} 
         />

@@ -151,7 +151,7 @@ function StockGraph({ symbol, companyName }) {
     let crosshair;
     const hoverCrosshair = {
         id: 'hoverCrosshair',
-        events: ['mousemove'],
+        events: ['mousemove', 'touchmove', 'touchend'],
 
         beforeDatasetsDraw(chart) {
             if(crosshair) {
@@ -174,7 +174,7 @@ function StockGraph({ symbol, companyName }) {
         afterEvent(chart, args) {
             const { chartArea: {top, bottom}, scales } = chart;
 
-            if(!args.inChartArea && crosshair) {
+            if((!args.inChartArea || args.event.type === 'touchend') && crosshair) {
                 crosshair = null;
                 args.changed = true;
             } else if (args.inChartArea) {
@@ -273,7 +273,10 @@ function StockGraph({ symbol, companyName }) {
                 {isDataLoading ? <DataPlaceholder width='180px' height='28px' /> : hasData ? `${formatNumberWithCommas(formatPriceChange(hoveredChange).value)} (${formatNumberWithCommas(formatPercentChange(hoveredPercentChange).value)})` : '$--.-- (--.--%)'}
             </Change>
             {isDataLoading ? <DataPlaceholder width='170px' height='24px' /> : hasData ? <StyledDateRange>{hoveredDate}</StyledDateRange> : <StyledDateRange>-- / -- / ----</StyledDateRange>}
-            <StockGraphChart onMouseLeave={() => handleGraphExit()}>
+            <StockGraphChart 
+                onMouseLeave={() => handleGraphExit()}
+                onTouchEnd={() => handleGraphExit()}
+            >
                 {isDataLoading ? (
                     <StyledStockGraphPlaceholder src={StockGraphPlaceholder} alt="Stock Graph Placeholder" />
                 ) : hasData ? (
