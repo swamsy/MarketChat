@@ -61,18 +61,24 @@ export function formatDateRange(startDate, endDate, timePeriod) {
 }
 
 export function formatPriceChange(change) {
-    if (change >= 0) {
+    if (change > 0) {
         return { value: `+$${change}`, color: 'green' };
-    } else {
+    } 
+    else if (change < 0) {
         return { value: `-$${Math.abs(change).toFixed(2)}`, color: 'red' }; 
+    } else {
+        return { value: `$${change}`, color: 600 };
     }
 }
 
 export function formatPercentChange(change) {
-    if (change >= 0) {
+    if (change > 0) {
         return { value: `+${change}%`, color: 'green' };
-    } else {
+    } 
+    else if (change > 0) {
         return { value: `${change}%`, color: 'red' };
+    } else {
+        return { value: `${change}%`, color: 600 };
     }
 }
 

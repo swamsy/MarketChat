@@ -4,7 +4,6 @@ import { createMessageStream, saveChatMessage, sendMessagetoApi } from '../servi
 import styled from 'styled-components'
 import SendIcon from '../assets/SendIcon.svg';
 import MarkIcon from '../assets/MarkIcon.png';
-import { CustomPulseLoader } from './Loaders';
 
 function Chatbot({ symbol }) {
   const [value, setValue] = useState('');
@@ -25,39 +24,35 @@ function Chatbot({ symbol }) {
 
   const sendMessage = async (message) => {
     try {
-      setMessages(messages => [...messages, { role: 'user', content: message }]);
       setIsMarkTyping(true);
+      setMessages(messages => [...messages, { role: 'user', content: message }]);
       saveChatMessage('user', message);
       await sendMessagetoApi(message, symbol);
-  
-      const eventSource = await createMessageStream();
-      console.log("Created message stream in chatbot.js");
-    
+      const eventSource = await createMessageStream();    
+
+      let completeMessage = "";
 
       eventSource.onmessage = (event) => {
         const data = JSON.parse(event.data);
-        console.log(JSON.parse(event.data))
-        if (data.delta.content) { // Only update if there's content
-          console.log("appending streaming message to state"); 
-          setStreamingMessage(prevMessage => prevMessage + data.delta.content);
+
+        // Append the new message chunk to the complete message.
+        if (data.delta.content) {
+          completeMessage += data.delta.content;
+          setStreamingMessage(completeMessage);
         }
-        
+
+        // If the message streaming is done, save the message and update the UI.
         if (data.finish_reason === "stop") {
-          console.log("Streaming Message", streamingMessage)
-          console.log("Messages:", messages)      
           setIsMarkTyping(false);
-          setMessages(messages => [...messages, { role: 'Mark', content: streamingMessage }]);
-          console.log("Saving this to mongoDB:", streamingMessage)
-          saveChatMessage('Mark', streamingMessage);
-          setStreamingMessage(""); // reset streamingMessage
-          eventSource.close(); // Close the connection when the AI is done responding
+
+          saveChatMessage('Mark', completeMessage);
+
+          setMessages(messages => [...messages, { role: 'Mark', content: completeMessage }]);
+          
+          setStreamingMessage(""); // reset the streaming message
+          eventSource.close(); // Close the connection as the AI is done responding.
         }
       };
-
-      
-      //console.log("Prompt Tokens:", data.usage.prompt_tokens);
-      //console.log("Completion Tokens:", data.usage.completion_tokens);      
-      //console.log("Total Tokens:", data.usage.total_tokens);
 
       eventSource.onerror = (err) => {
         console.error("EventSource failed:", err);
@@ -71,12 +66,31 @@ function Chatbot({ symbol }) {
     }
   }
 
-  // Scroll to bottom of chat when new message is added
-  useEffect(() => { 
+  // Scroll to bottom of chat area when new message is added
+  useEffect(() => {
     if (chatEndRef.current) {
-      chatEndRef.current.scrollTop = chatEndRef.current.scrollHeight;
+        const element = chatEndRef.current;
+        const distanceFromBottom = element.scrollHeight - (element.scrollTop + element.clientHeight);
+    
+        // When a new message is sent, auto-scroll to the bottom of the message
+        if (distanceFromBottom <= 200) {
+          element.scrollTop = element.scrollHeight;
+        }
     }
   }, [messages]);
+
+  // Scroll to bottom of chat as message is streamed in - but only if user is at or near the bottom of the chat area
+  useEffect(() => { 
+    if (chatEndRef.current) {
+        const element = chatEndRef.current;
+        const distanceFromBottom = element.scrollHeight - (element.scrollTop + element.clientHeight);
+
+        // Check if the user is at or near (within 30px) the bottom of the chat area
+        if (distanceFromBottom <= 30) {
+          element.scrollTop = element.scrollHeight;
+        }
+    }
+  }, [streamingMessage]);
 
   // Prevent "What is MarketChat?" suggested query from showing up again if it's already been clicked when user goes to different stock symbol
   useEffect(() => {
@@ -123,18 +137,14 @@ function Chatbot({ symbol }) {
             </MessageBubble>
           </Message>
         ))}
-      {isMarkTyping && 
-        <Message className='Mark'>
-          <StyledMarkIcon src={MarkIcon} alt="Mark Icon" />
-          <MessageBubble className='Mark'>
-            <p>{streamingMessage}</p>
-          </MessageBubble>
-        </Message>
-      }
-      <MarkTyping>
-        {isMarkTyping && <h6>Mark is typing</h6>}
-        {isMarkTyping && <CustomPulseLoader />}
-      </MarkTyping>
+        {isMarkTyping && 
+          <Message className='Mark'>
+            <StyledMarkIcon src={MarkIcon} alt="Mark Icon" />
+            <MessageBubble className='Mark'>
+              <p>{streamingMessage}</p>
+            </MessageBubble>
+          </Message>
+        }
       </ChatArea>
       <SendMessageSuggestedQueryContainer>
         {suggestedQueries.map((query, index) => {
@@ -199,7 +209,7 @@ const ChatArea = styled.div`
   overflow-y: auto;
   overflow-x: hidden;
   flex: 1;
-  padding: 0.875rem;
+  padding: 0.875rem 0.6rem;
 
   &::-webkit-scrollbar {
     width: 8px;
@@ -248,18 +258,11 @@ const StyledMarkIcon = styled.img`
 
 `;
 
-const MarkTyping = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 4px;
-`;
-
 const SendMessageSuggestedQueryContainer = styled.div`
   display: flex;
   flex-direction: column;
   padding: 0.875rem;
   padding-top: 0.3rem;
-
 `;
 
 const SuggestedQuery = styled.div`
@@ -268,7 +271,6 @@ const SuggestedQuery = styled.div`
   border-radius: 18px;
   padding: 0.2rem 0.5rem;
   margin-bottom: 0.4rem;
-  max-width: 95%;
   align-self: flex-end;
 
   opacity: ${props => props.disabled ? 0.5 : 1};
@@ -277,6 +279,10 @@ const SuggestedQuery = styled.div`
   p {
     display: inline;
     color: ${props => props.theme.colors[500]};
+
+    @media (max-width: 1500px) {
+      font-size: 14px;
+    }
   }
 
   &:hover {

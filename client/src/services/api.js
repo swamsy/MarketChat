@@ -15,6 +15,7 @@ export async function sendMessagetoApi(message, symbol) {
 
 export async function createMessageStream() {
   // Create an EventSource that connects to server endpoint
+  console.log("create new event source")
   const eventSource = new EventSource(`${process.env.REACT_APP_API_URL}/openai/gpt-3.5-turbo/stream`); 
   
   eventSource.onerror = (error) => {
