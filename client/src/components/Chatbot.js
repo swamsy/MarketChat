@@ -15,7 +15,7 @@ function Chatbot({ symbol }) {
   ]);
   const [streamingMessage, setStreamingMessage] = useState("");
   const [isMarkTyping, setIsMarkTyping] = useState(false);
-  const suggestedQueries = ["What is MarketChat?", `What is the current market sentiment on ${symbol}?`, `Give me a financial analysis on ${symbol}`]; // ocassionally, the ai won't know the stock ticker, so feed it the company's name along with the ticker to minimize ai not knowing of the stock
+  const suggestedQueries = ["What is MarketChat?", `What is the market sentiment on ${symbol}?`, `Give me a financial analysis on ${symbol}`]; // ocassionally, the ai won't know the stock ticker, so feed it the company's name along with the ticker to minimize ai not knowing of the stock
   const [clickedIndices, setClickedIndices] = useState([]);
 
   const chatEndRef = useRef(null);

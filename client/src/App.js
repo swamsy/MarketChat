@@ -89,7 +89,7 @@ const HeroContainer = styled.div`
   grid-template-columns: 68% 1fr;
   gap: 2rem;
   
-  @media (max-width: 1250px) {
+  @media (max-width: 1440px) {
     grid-template-columns: 58% 1fr;
   }
 

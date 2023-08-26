@@ -38,8 +38,7 @@ const StyledModal = styled(Modal)`
   outline: none;
   border-radius: 8px;
   padding: 20px 36px;
-  width: 420px;
-  max-width: 85%; 
+  width: clamp(250px, 85vw, 450px);
 
   @media (max-width: 768px) {
     padding: 16px 18px;
@@ -85,8 +84,10 @@ const Definition = styled.div`
   }
 
   @media (max-width: 768px) {
+    margin-bottom: 1rem;
+    
     p {
-      line-height: 1.2;
+      line-height: 1.3;
     }
   }
 `;

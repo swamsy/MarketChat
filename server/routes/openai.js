@@ -25,11 +25,11 @@ router.post('/gpt-3.5-turbo/send', async (req, res) => {
         if (message.includes("What is MarketChat")) {
             messages.push({
                 "role": "system",
-                "content": "MarketChat is a website that features up-to-date stock price history for all of the stocks in the NASDAQ and the NYSE, a chatbot that can answer questions about all of those stocks, and there is also a company description along with important information about the stock and the stock's 'key data'. The About Section includes the description of the company, the sector, the industry, stock exchange, country, and dividend date. The Key Data section includes Market capitalization, P/E ratio, 52 week range, dividend yield, and EPS. It was created by Michael Swan, a Computer Science Student at the University of Connecticut. You can find his personal portfolio online at mswan.dev."
+                "content": "MarketChat is a website that features up-to-date stock price history for all of the stocks in the NASDAQ and the NYSE, a chatbot that can answer questions about all of those stocks, and there is also a company description along with important information about the stock and the stock's 'key data'. The About Section includes the description of the company, the sector, the industry, stock exchange, country, and dividend date. The Key Data section includes Market capitalization, P/E ratio, 52 week range, dividend yield, and EPS. It was created by Michael Swan, a Computer Science Student at the University of Connecticut. You can find his personal portfolio online at mswan.dev. Make sure at the end of your response to say who created the website and where you can find his portfolio."
             });
         }
         
-        if (message.includes("current market sentiment on")) {
+        if (message.includes("market sentiment on")) {
             sentimentData = await getSentimentData(symbol);
             if(sentimentData) {
                 // Add sentiment data to the message array as context
@@ -44,7 +44,7 @@ router.post('/gpt-3.5-turbo/send', async (req, res) => {
             "role": "user",
             "content": message
         });
-        
+
         fullMessage = messages;
 
         res.status(200).send('Message processed');
